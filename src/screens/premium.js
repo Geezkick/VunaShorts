@@ -10,6 +10,9 @@ export function renderPremium() {
     <div class="screen" style="padding-bottom:calc(var(--nav-height) + 16px);background:var(--bg-primary);">
       <!-- Hero -->
       <div style="position:relative;padding:calc(var(--safe-top) + 40px) var(--space-4) var(--space-8);text-align:center;overflow:hidden;">
+        <button class="btn btn-ghost btn-icon" style="position:absolute;top:var(--space-4);left:var(--space-4);z-index:10;color:white;background:rgba(255,255,255,0.1);backdrop-filter:blur(8px);" onclick="document.dispatchEvent(new CustomEvent('navigate',{detail:'home'}))">
+          ${Icons.X()}
+        </button>
         <div style="position:absolute;inset:0;background:radial-gradient(circle at top, rgba(212,168,83,0.15) 0%, transparent 60%);pointer-events:none;"></div>
         <div style="display:inline-flex;align-items:center;justify-content:center;width:64px;height:64px;border-radius:50%;background:var(--gradient-premium);box-shadow:0 0 40px rgba(212,168,83,0.4);color:white;margin-bottom:var(--space-4);animation:breathe 3s ease-in-out infinite;">
           ${Icons.Crown()}

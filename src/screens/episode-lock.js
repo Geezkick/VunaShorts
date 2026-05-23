@@ -10,6 +10,9 @@ export function renderEpisodeLock() {
   return `
     <div class="screen" style="background:var(--bg-primary);position:relative;overflow:hidden;padding-bottom:calc(var(--nav-height) + 16px);">
       <div style="position:relative;height:45vh;overflow:hidden;">
+        <button class="btn btn-ghost btn-icon" style="position:absolute;top:var(--space-4);left:var(--space-4);z-index:10;color:white;background:rgba(0,0,0,0.3);backdrop-filter:blur(8px);" onclick="document.dispatchEvent(new CustomEvent('navigate',{detail:'home'}))">
+          ${Icons.X()}
+        </button>
         <div style="position:absolute;inset:0;background:url('${s.poster}') center/cover;filter:blur(12px) brightness(0.4);transform:scale(1.1);"></div>
         <div style="position:absolute;inset:0;background:var(--gradient-cinematic);"></div>
         <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;z-index:2;">
