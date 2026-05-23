@@ -9,7 +9,8 @@ export function renderSplash() {
     <div id="splash-inner" style="position:fixed;inset:0;z-index:var(--z-splash);background:var(--bg-primary);display:flex;flex-direction:column;align-items:center;justify-content:center;overflow:hidden;">
       <div class="splash-grain"></div>
       <div class="splash-glow"></div>
-      <div class="splash-logo anim-scale-in" style="text-align:center;position:relative;z-index:2;">
+      <div class="splash-logo anim-scale-in" style="text-align:center;position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;gap:var(--space-4);">
+        <img src="/src/assets/app-icon-transparent.png" alt="VunaShorts Logo" style="width:140px;height:140px;object-fit:contain;filter:drop-shadow(0 10px 20px rgba(212,168,83,0.3));" />
         <div style="font-family:var(--font-display);font-size:3.5rem;font-weight:900;letter-spacing:-0.03em;line-height:1;">
           <span style="color:var(--text-primary);">Vuna</span><span style="background:var(--gradient-premium);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">Shorts</span>
         </div>
