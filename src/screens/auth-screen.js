@@ -7,7 +7,7 @@ export function renderAuthScreen() {
     <div id="auth-container" style="position:fixed;inset:0;z-index:var(--z-modal);background:var(--bg-primary);display:flex;flex-direction:column;overflow-y:auto;">
       <div class="auth-header" style="padding:var(--space-6);text-align:center;margin-top:var(--space-8);">
         <div class="auth-logo anim-scale-in" style="margin-bottom:var(--space-4);display:flex;flex-direction:column;align-items:center;gap:var(--space-3);">
-          <img src="/src/assets/app-icon-transparent.png" alt="VunaShorts Logo" style="width:80px;height:80px;object-fit:contain;filter:drop-shadow(0 4px 10px rgba(212,168,83,0.3));" />
+          <img src="/app-logo.png" alt="VunaShorts Logo" style="width:80px;height:80px;object-fit:contain;filter:drop-shadow(0 4px 10px rgba(212,168,83,0.3));" />
           <div style="font-family:var(--font-display);font-size:2.5rem;font-weight:900;line-height:1;">
             <span style="color:var(--text-primary);">Vuna</span><span style="background:var(--gradient-premium);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">Shorts</span>
           </div>
