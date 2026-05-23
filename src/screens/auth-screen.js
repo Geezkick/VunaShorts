@@ -40,7 +40,7 @@ export function renderAuthScreen() {
             </div>
           </div>
           
-          <button type="submit" id="auth-submit-btn" class="btn btn-primary" style="width:100%;padding:var(--space-3);border-radius:var(--radius-md);font-weight:600;display:flex;justify-content:center;align-items:center;gap:var(--space-2);">
+          <button type="submit" id="auth-submit-btn" class="btn btn-primary btn-lg btn-full" style="border-radius:14px;display:flex;justify-content:center;align-items:center;gap:var(--space-2);">
             Sign In
           </button>
         </form>
@@ -52,10 +52,10 @@ export function renderAuthScreen() {
         </div>
 
         <div class="social-auth stagger-children">
-          <button id="btn-apple" class="btn" style="width:100%;padding:var(--space-3);margin-bottom:var(--space-3);border-radius:var(--radius-md);background:#000;color:#fff;border:1px solid #333;display:flex;align-items:center;justify-content:center;gap:var(--space-2);">
+          <button id="btn-apple" class="btn btn-apple btn-full" style="padding:var(--space-3);margin-bottom:var(--space-3);border-radius:14px;display:flex;align-items:center;justify-content:center;gap:var(--space-2);font-size:var(--text-sm);">
             ${Icons.Apple()} Continue with Apple
           </button>
-          <button id="btn-google" class="btn" style="width:100%;padding:var(--space-3);border-radius:var(--radius-md);background:#fff;color:#000;border:1px solid #ddd;display:flex;align-items:center;justify-content:center;gap:var(--space-2);">
+          <button id="btn-google" class="btn btn-google btn-full" style="padding:var(--space-3);border-radius:14px;display:flex;align-items:center;justify-content:center;gap:var(--space-2);font-size:var(--text-sm);">
             ${Icons.Google()} Continue with Google
           </button>
         </div>
