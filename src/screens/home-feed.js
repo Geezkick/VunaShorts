@@ -141,7 +141,6 @@ function renderFeedCard(series, index) {
     </div>
   `;
 }
-}
 
 export function mountHomeFeed(el) {
   const feedCards = el.querySelector('#feed-cards');
