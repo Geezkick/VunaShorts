@@ -23,6 +23,7 @@ export function renderHomeFeed() {
         </div>
         <div style="display:flex;gap:var(--space-3);align-items:center;">
           <button class="btn btn-ghost btn-icon" id="btn-search-home" style="font-size:18px;">${Icons.Search()}</button>
+          <button class="btn btn-ghost btn-icon" id="btn-mute-home" style="font-size:18px;">${Icons.VolumeMute()}</button>
           <button class="btn btn-ghost btn-icon" id="btn-notif-home" style="font-size:18px;position:relative;">${Icons.Bell()}<span class="nav-badge" style="top:6px;right:6px;"></span></button>
         </div>
       </div>
@@ -67,12 +68,29 @@ function renderFeedCard(series, index) {
   const views = series.views;
   const ep = Math.min(index + 1, series.episodes);
   
+  // Publicly available high-quality loopable fast loading African-themed mp4 videos
+  const videoUrls = [
+    'https://assets.mixkit.co/videos/preview/mixkit-african-woman-smiling-at-camera-41808-large.mp4',
+    'https://assets.mixkit.co/videos/preview/mixkit-young-black-woman-with-braids-smiling-41804-large.mp4',
+    'https://assets.mixkit.co/videos/preview/mixkit-close-up-of-hands-playing-a-djembe-drum-43093-large.mp4',
+    'https://assets.mixkit.co/videos/preview/mixkit-cheerful-african-man-dancing-40332-large.mp4',
+    'https://assets.mixkit.co/videos/preview/mixkit-woman-dancing-slowly-in-the-streets-40347-large.mp4',
+    'https://assets.mixkit.co/videos/preview/mixkit-djembe-drummer-close-up-43094-large.mp4',
+    'https://assets.mixkit.co/videos/preview/mixkit-man-dancing-happy-in-the-street-40338-large.mp4',
+    'https://assets.mixkit.co/videos/preview/mixkit-hands-drumming-rhythmically-on-a-conga-43092-large.mp4'
+  ];
+  
+  const videoSrc = videoUrls[index % videoUrls.length];
+  
   return `
     <div class="feed-card ${index === 0 ? 'active' : 'below'}" data-index="${index}">
       <div class="feed-card-poster" style="${bgStyle};${isLocked ? 'filter:blur(8px) brightness(0.5);' : ''}"></div>
-      <div class="feed-card-gradient"></div>
+      ${!isLocked ? `
+        <video class="feed-card-video" src="${videoSrc}" loop playsinline muted autoplay style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:1;opacity:0;transition:opacity 0.4s;"></video>
+      ` : ''}
+      <div class="feed-card-gradient" style="z-index:2;"></div>
       ${isLocked ? `
-        <div class="lock-overlay-mini">
+        <div class="lock-overlay-mini" style="z-index:3;">
           <div class="lock-icon-pulse" style="color:white;">${Icons.Lock()}</div>
           <button class="btn btn-gold btn-sm" onclick="document.dispatchEvent(new CustomEvent('navigate',{detail:'episode-lock'}))">
             Unlock — ${series.currency} ${series.pricePerEpisode}
@@ -117,11 +135,12 @@ function renderFeedCard(series, index) {
           ${series.tags.includes('trending') ? `<span class="episode-badge ai-badge"><span style="color:var(--accent-rose);">${Icons.Fire()}</span> Trending</span>` : ''}
         </div>
       </div>
-      <div class="feed-progress">
-        <div class="feed-progress-fill" style="width:${isLocked ? 0 : Math.random() * 60 + 20}%;"></div>
+      <div class="feed-progress" style="z-index:6;">
+        <div class="feed-progress-fill" style="width:0%;"></div>
       </div>
     </div>
   `;
+}
 }
 
 export function mountHomeFeed(el) {
@@ -130,21 +149,50 @@ export function mountHomeFeed(el) {
   
   let unsubscribe;
 
+  // Initialize global mute state if not set
+  if (window.feedMuted === undefined) {
+    window.feedMuted = true; // start muted for safe autoplay
+  }
+
   function renderCards() {
     const series = appStore.getSeries();
     feedCards.innerHTML = series.map((s, i) => renderFeedCard(s, i)).join('');
     currentIndex = 0;
     
-    // Re-bind touch/swipe listeners since cards changed
-    bindEvents(feedCards, series.length);
+    // Play the very first video initially
+    setTimeout(() => {
+      playActiveVideo(feedCards);
+      updateMuteButtonIcon();
+    }, 300);
+  }
+
+  function updateMuteButtonIcon() {
+    const muteBtn = el.querySelector('#btn-mute-home');
+    if (muteBtn) {
+      muteBtn.innerHTML = window.feedMuted ? Icons.VolumeMute() : Icons.Volume2();
+      muteBtn.style.color = window.feedMuted ? 'var(--text-secondary)' : 'var(--accent-gold)';
+    }
   }
 
   unsubscribe = appStore.subscribe('series', renderCards);
   renderCards();
 
-  function bindEvents(cardsContainer, totalLength) {
-    // Clear old listeners if we had a clean way, but we are just attaching to the container
-    // We only attach to the container once
+  // Mute button handler
+  const muteBtn = el.querySelector('#btn-mute-home');
+  if (muteBtn) {
+    muteBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      window.feedMuted = !window.feedMuted;
+      updateMuteButtonIcon();
+      
+      // Update all video elements immediately
+      const videos = feedCards.querySelectorAll('.feed-card-video');
+      videos.forEach(v => {
+        v.muted = window.feedMuted;
+      });
+      
+      showToast(window.feedMuted ? 'Muted' : 'Unmuted', 'info');
+    });
   }
 
   // Touch/swipe handling
@@ -167,12 +215,20 @@ export function mountHomeFeed(el) {
     }
   }, { passive: true });
 
-  // Scroll wheel for desktop
+  // Scroll wheel for desktop (debounce slightly so it doesn't trigger rapidly)
+  let lastWheelTime = 0;
   feedCards.addEventListener('wheel', e => {
     e.preventDefault();
+    const now = Date.now();
+    if (now - lastWheelTime < 600) return; // scroll transition time
     const length = appStore.getSeries().length;
-    if (e.deltaY > 30 && currentIndex < length - 1) goToCard(currentIndex + 1, feedCards);
-    else if (e.deltaY < -30 && currentIndex > 0) goToCard(currentIndex - 1, feedCards);
+    if (e.deltaY > 20 && currentIndex < length - 1) {
+      goToCard(currentIndex + 1, feedCards);
+      lastWheelTime = now;
+    } else if (e.deltaY < -20 && currentIndex > 0) {
+      goToCard(currentIndex - 1, feedCards);
+      lastWheelTime = now;
+    }
   }, { passive: false });
 
   // Feed tabs
@@ -201,7 +257,8 @@ export function mountHomeFeed(el) {
 
   // Action buttons
   el.querySelectorAll('.feed-action').forEach(btn => {
-    btn.addEventListener('click', () => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
       const action = btn.dataset.action;
       const icon = btn.querySelector('.feed-action-icon');
       if (action === 'like') {
@@ -218,36 +275,67 @@ export function mountHomeFeed(el) {
     });
   });
 
-  // Simulate progress bars
-  simulateProgress(feedCards);
+  // Track video progress dynamically instead of random simulation
+  const progressInterval = setInterval(() => {
+    const activeCard = feedCards.querySelector('.feed-card.active');
+    if (!activeCard) return;
+    const video = activeCard.querySelector('.feed-card-video');
+    const fill = activeCard.querySelector('.feed-progress-fill');
+    if (!video || !fill) return;
+    if (video.duration) {
+      const pct = (video.currentTime / video.duration) * 100;
+      fill.style.width = pct + '%';
+    }
+  }, 100);
 
+  // Pause active video when navigated away
   el.addEventListener('DOMNodeRemoved', (e) => {
-    if (e.target === el && unsubscribe) unsubscribe();
+    if (e.target === el) {
+      if (unsubscribe) unsubscribe();
+      clearInterval(progressInterval);
+      const activeVideo = feedCards.querySelector('.feed-card.active .feed-card-video');
+      if (activeVideo) activeVideo.pause();
+    }
+  });
+}
+
+function playActiveVideo(container) {
+  const cards = container.querySelectorAll('.feed-card');
+  cards.forEach((card, i) => {
+    const video = card.querySelector('.feed-card-video');
+    if (!video) return;
+    
+    if (i === currentIndex) {
+      video.muted = window.feedMuted;
+      video.currentTime = 0;
+      video.style.opacity = '1';
+      const playPromise = video.play();
+      if (playPromise !== undefined) {
+        playPromise.catch(error => {
+          console.log("Auto-play prevented, starting muted.", error);
+          video.muted = true;
+          video.play();
+        });
+      }
+    } else {
+      video.pause();
+      video.style.opacity = '0';
+    }
   });
 }
 
 function goToCard(index, container) {
-  const cards = container.querySelectorAll('.feed-card');
   currentIndex = index;
+  const cards = container.querySelectorAll('.feed-card');
   cards.forEach((card, i) => {
     card.classList.remove('active', 'above', 'below');
     if (i < index) card.classList.add('above');
     else if (i === index) card.classList.add('active');
     else card.classList.add('below');
   });
-}
-
-function simulateProgress(container) {
-  setInterval(() => {
-    const active = container.querySelector('.feed-card.active');
-    if (!active) return;
-    const fill = active.querySelector('.feed-progress-fill');
-    if (!fill) return;
-    let w = parseFloat(fill.style.width) || 0;
-    w += 0.5;
-    if (w > 100) w = 0;
-    fill.style.width = w + '%';
-  }, 200);
+  
+  // Trigger video playback corresponding to active card
+  playActiveVideo(container);
 }
 
 function formatViews(n) {
