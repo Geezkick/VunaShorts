@@ -11,13 +11,15 @@
   <meta property="og:title" content="VunaShorts — Africa's Micro-Cinema Platform" />
   <meta property="og:description" content="Africa's Stories. One Minute at a Time." />
   <meta property="og:type" content="website" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' 'unsafe-eval' https://fonts.googleapis.com https://fonts.gstatic.com; connect-src 'self' ws: wss: http://localhost:*; img-src 'self' data: https:; font-src 'self' https://fonts.gstatic.com;" />
   <title>VunaShorts — Africa's Stories. One Minute at a Time.</title>
+  <link rel="icon" type="image/png" href="/app-logo.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
-  <script type="module" crossorigin src="/assets/index-DSO__sPJ.js"></script>
-  <link rel="stylesheet" crossorigin href="/assets/index-nkdqhdyv.css">
-</head>
+  <script type="module" crossorigin src="/assets/index-DN5ZdKIl.js"></script>
+  <link rel="stylesheet" crossorigin href="/assets/index-B7_Rmxg7.css">
+<link rel="manifest" href="/manifest.webmanifest"></head>
 <body>
   <div id="app">
     <div id="splash-screen"></div>
@@ -27,6 +29,36 @@
     </div>
   </div>
   <div id="modal-overlay" class="hidden"></div>
+  <div id="create-action-sheet" class="glass-overlay hidden" style="z-index:var(--z-modal);align-items:flex-end;">
+    <div class="card" style="width:100%;max-width:500px;margin:0 auto;border-bottom-left-radius:0;border-bottom-right-radius:0;padding:var(--space-5);animation:slideUpModal 400ms var(--ease-cinematic) forwards;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:var(--space-5);">
+        <h3 style="font-size:var(--text-lg);">Create</h3>
+        <button class="btn btn-ghost btn-icon" id="btn-close-action-sheet">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+        </button>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(3, 1fr);gap:var(--space-3);margin-bottom:var(--space-6);">
+        <button class="press-effect action-sheet-btn" data-action="upload" style="background:transparent;border:none;color:var(--text-primary);display:flex;flex-direction:column;align-items:center;gap:var(--space-2);cursor:pointer;">
+          <div style="width:56px;height:56px;border-radius:var(--radius-full);background:var(--bg-secondary);display:flex;align-items:center;justify-content:center;color:var(--accent-blue);">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+          </div>
+          <span style="font-size:var(--text-sm);font-weight:500;">Upload</span>
+        </button>
+        <button class="press-effect action-sheet-btn" data-action="go-live" style="background:transparent;border:none;color:var(--text-primary);display:flex;flex-direction:column;align-items:center;gap:var(--space-2);cursor:pointer;">
+          <div style="width:56px;height:56px;border-radius:var(--radius-full);background:var(--bg-secondary);display:flex;align-items:center;justify-content:center;color:var(--accent-rose);">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 20h.01"/><path d="M7 20v-4"/><path d="M12 20v-8"/><path d="M17 20V8"/><path d="M22 4v16"/></svg>
+          </div>
+          <span style="font-size:var(--text-sm);font-weight:500;">Go Live</span>
+        </button>
+        <button class="press-effect action-sheet-btn" data-action="studio" style="background:transparent;border:none;color:var(--text-primary);display:flex;flex-direction:column;align-items:center;gap:var(--space-2);cursor:pointer;">
+          <div style="width:56px;height:56px;border-radius:var(--radius-full);background:var(--bg-secondary);display:flex;align-items:center;justify-content:center;color:var(--accent-gold);">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"/></svg>
+          </div>
+          <span style="font-size:var(--text-sm);font-weight:500;">Studio</span>
+        </button>
+      </div>
+    </div>
+  </div>
   <div id="toast-container"></div>
 </body>
 </html>

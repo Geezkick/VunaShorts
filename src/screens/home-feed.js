@@ -4,6 +4,7 @@
 import { appStore } from '../services/store.js';
 import { showToast } from '../components/utils.js';
 import { Icons } from '../components/icons.js';
+import logoUrl from '../assets/app-icon-transparent.png';
 
 let currentIndex = 0;
 let touchStartY = 0;
@@ -17,7 +18,7 @@ export function renderHomeFeed() {
       </div>
       <div id="feed-top-bar" style="position:absolute;top:0;left:0;right:0;z-index:10;padding:calc(var(--safe-top) + 12px) var(--space-4) var(--space-3);background:var(--gradient-cinematic-top);display:flex;justify-content:space-between;align-items:center;">
         <div style="font-family:var(--font-display);font-weight:800;font-size:var(--text-xl);display:flex;align-items:center;gap:var(--space-2);">
-          <img src="/app-logo.png" alt="Logo" style="width:24px;height:24px;object-fit:contain;" />
+          <img src="${logoUrl}" alt="Logo" style="width:24px;height:24px;object-fit:contain;" />
           <div><span style="color:var(--text-primary);">Vuna</span><span style="background:var(--gradient-premium);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">Shorts</span></div>
         </div>
         <div style="display:flex;gap:var(--space-3);align-items:center;">
