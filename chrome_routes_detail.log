@@ -1,0 +1,98 @@
+--- Detailed Routes Debug Start ---
+Starting Google Chrome in headless debug mode...
+Navigating to http://localhost:5174...
+[Browser Console]: [vite] connecting...
+[Browser Console]: VunaShorts initializing...
+[Browser Console]: mountSplash called
+[Browser Console]: [vite] connected.
+[Browser Console]: mountSplash timeout fired
+[Browser Console]: langSelect element found: true
+[Browser Console]: Removed hidden class from lang-select
+Page loaded. Waiting 3s...
+[Browser Console]: [vite] connecting...
+[Browser Console]: [vite] connected.
+[Browser Console]: VunaShorts initializing...
+[Browser Console]: mountSplash called
+[Browser Console]: mountSplash timeout fired
+[Browser Console]: langSelect element found: true
+[Browser Console]: Removed hidden class from lang-select
+Dismissing splash screen (selecting English)...
+Splash result: Dismissed splash
+Waiting 1s for login...
+Login result: Clicked Google login
+Waiting 2s for home feed to settle...
+Starting sequential route tests inside browser...
+--- ROUTE TEST RESULTS ---
+[
+  {
+    "route": "home",
+    "mounted": true,
+    "htmlLength": 52948,
+    "preview": "\n    <div id=\"home-feed\" class=\"full-screen\" style=\"position:absolute;inset:0;overflow:hidden;background:var(--bg-primary);\">\n      <div id=\"feed-card",
+    "containsErrors": false
+  },
+  {
+    "route": "discover",
+    "mounted": true,
+    "htmlLength": 40811,
+    "preview": "\n    <div class=\"screen\" style=\"padding-bottom:calc(var(--nav-height) + 16px);\">\n      <div style=\"padding:calc(var(--safe-top) + 16px) var(--space-4)",
+    "containsErrors": false
+  },
+  {
+    "route": "creator-studio",
+    "mounted": true,
+    "htmlLength": 16100,
+    "preview": "\n    <div class=\"screen\" style=\"padding-bottom:calc(var(--nav-height) + 16px);\">\n      <div style=\"padding:calc(var(--safe-top) + 16px) var(--space-4)",
+    "containsErrors": false
+  },
+  {
+    "route": "crowdfunding",
+    "mounted": true,
+    "htmlLength": 18276,
+    "preview": "\n    <div class=\"screen\" style=\"padding-bottom:calc(var(--nav-height) + 16px);\">\n      <div style=\"padding:calc(var(--safe-top) + 16px) var(--space-4)",
+    "containsErrors": false
+  },
+  {
+    "route": "profile",
+    "mounted": true,
+    "htmlLength": 13667,
+    "preview": "\n    <div class=\"screen\" style=\"padding-bottom:calc(var(--nav-height) + 16px);\">\n      <!-- Header -->\n      <div style=\"padding:calc(var(--safe-top) ",
+    "containsErrors": true
+  },
+  {
+    "route": "watch-party",
+    "mounted": true,
+    "htmlLength": 5250,
+    "preview": "\n    <div class=\"screen full-screen\" style=\"background:#000;position:relative;overflow:hidden;\">\n      <!-- Video Area -->\n      <div style=\"position:",
+    "containsErrors": false
+  },
+  {
+    "route": "ai-engine",
+    "mounted": true,
+    "htmlLength": 17733,
+    "preview": "\n    <div class=\"screen\" style=\"padding-bottom:calc(var(--nav-height) + 16px);\">\n      <div style=\"padding:calc(var(--safe-top) + 16px) var(--space-4)",
+    "containsErrors": false
+  },
+  {
+    "route": "marketplace",
+    "mounted": true,
+    "htmlLength": 13241,
+    "preview": "\n    <div class=\"screen\" style=\"padding-bottom:calc(var(--nav-height) + 16px);\">\n      <div style=\"padding:calc(var(--safe-top) + 16px) var(--space-4)",
+    "containsErrors": false
+  },
+  {
+    "route": "admin",
+    "mounted": true,
+    "htmlLength": 10309,
+    "preview": "\n    <div class=\"screen\" style=\"padding-bottom:calc(var(--nav-height) + 16px);background:var(--bg-primary);\">\n      <div style=\"padding:calc(var(--saf",
+    "containsErrors": false
+  },
+  {
+    "route": "premium",
+    "mounted": true,
+    "htmlLength": 11887,
+    "preview": "\n    <div class=\"screen\" style=\"padding-bottom:calc(var(--nav-height) + 16px);background:var(--bg-primary);\">\n      <!-- Hero -->\n      <div style=\"po",
+    "containsErrors": false
+  }
+]
+--------------------------

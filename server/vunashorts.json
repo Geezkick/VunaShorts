@@ -1,0 +1,63 @@
+{
+  "users": [
+    {
+      "id": "u1",
+      "name": "Zuri",
+      "handle": "@zuri_creates",
+      "avatar": "Z",
+      "country": "KE",
+      "premium": 1,
+      "verified": 1
+    },
+    {
+      "id": "u2",
+      "name": "Kwame",
+      "handle": "@kwame_studios",
+      "avatar": "K",
+      "country": "GH",
+      "premium": 0,
+      "verified": 1
+    }
+  ],
+  "series": [
+    {
+      "id": "s1",
+      "creatorId": "u1",
+      "title": "The Nairobi Hustle",
+      "description": "A story of ambition in the city in the sun.",
+      "genre": "Drama",
+      "tags": [
+        "drama",
+        "trending",
+        "nairobi"
+      ],
+      "episodes": 12,
+      "freeEpisodes": 2,
+      "pricePerEpisode": 50,
+      "poster": "",
+      "gradientPoster": "linear-gradient(135deg, #1a1a2e, #16213e)",
+      "views": "1.2M",
+      "rating": "4.8",
+      "createdAt": 1779567806691
+    },
+    {
+      "id": "s2",
+      "creatorId": "u2",
+      "title": "Accra Nights",
+      "description": "Romance and betrayal.",
+      "genre": "Romance",
+      "tags": [
+        "romance",
+        "new"
+      ],
+      "episodes": 8,
+      "freeEpisodes": 1,
+      "pricePerEpisode": 50,
+      "poster": "",
+      "gradientPoster": "linear-gradient(135deg, #2b1055, #7597de)",
+      "views": "500K",
+      "rating": "4.5",
+      "createdAt": 1779567706692
+    }
+  ]
+}

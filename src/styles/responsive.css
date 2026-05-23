@@ -1,0 +1,416 @@
+/* ============================================
+   VUNASHORTS — Advanced Responsive System
+   Mobile-first → Tablet → Desktop → Ultrawide
+   ============================================ */
+
+/* ── Mobile Enhancements (< 480px) ── */
+@media (max-width: 480px) {
+  :root {
+    --text-xs: 0.625rem;
+    --text-sm: 0.75rem;
+    --text-base: 0.875rem;
+  }
+  
+  .section-header h3 {
+    font-size: var(--text-base);
+  }
+  
+  .btn-lg {
+    padding: var(--space-3) var(--space-6);
+    font-size: var(--text-sm);
+  }
+}
+
+/* ── Tablet Portrait (≥ 600px) ── */
+@media (min-width: 600px) {
+  #app {
+    max-width: 100%;
+  }
+
+  /* Feed cards get wider touch targets */
+  .feed-action-icon {
+    width: 52px;
+    height: 52px;
+  }
+  
+  /* Grid improvements */
+  .responsive-grid-2 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .responsive-grid-3 {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+/* ── Tablet Landscape / Small Desktop (≥ 768px) ── */
+@media (min-width: 768px) {
+  :root {
+    --max-width: 100%;
+    --nav-height: auto;
+  }
+
+  body {
+    overflow: auto;
+    height: auto;
+  }
+
+  html {
+    overflow: auto;
+    height: auto;
+  }
+  
+  #app {
+    max-width: 1440px;
+    height: 100vh;
+    margin: 0 auto;
+    border-left: var(--border-subtle);
+    border-right: var(--border-subtle);
+    position: relative;
+  }
+
+  #main-app {
+    display: grid;
+    grid-template-columns: 80px 1fr;
+    grid-template-rows: 1fr;
+    overflow: hidden;
+  }
+
+  #screen-container {
+    overflow: hidden;
+    position: relative;
+    height: 100%;
+  }
+  
+  .screen {
+    position: absolute;
+    inset: 0;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding-bottom: var(--space-8);
+    height: 100%;
+  }
+
+  .screen.full-screen {
+    overflow: hidden;
+    padding-bottom: 0;
+  }
+
+  /* Side Navigation */
+  #bottom-nav {
+    order: -1;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    height: 100vh;
+    width: 80px;
+    border-top: none;
+    border-right: var(--border-subtle);
+    padding: var(--space-6) var(--space-2);
+    gap: var(--space-4);
+    background: var(--bg-primary);
+    backdrop-filter: none;
+    position: sticky;
+    top: 0;
+  }
+
+  .nav-item {
+    width: 56px;
+    padding: var(--space-2);
+    border-radius: var(--radius-lg);
+  }
+
+  .nav-item:hover {
+    background: var(--bg-secondary);
+  }
+
+  .nav-item.active::before {
+    top: 50%;
+    left: -8px;
+    transform: translateY(-50%);
+    width: 3px;
+    height: 24px;
+    border-radius: 0 var(--radius-full) var(--radius-full) 0;
+  }
+
+  .nav-item-create .nav-icon {
+    margin-top: 0;
+    width: 48px;
+    height: 48px;
+  }
+
+  .nav-badge {
+    top: 2px;
+    right: 8px;
+  }
+
+  /* Auth screen fills nicely */
+  #auth-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* Section layouts */
+  .section-header {
+    padding: var(--space-5) var(--space-6) var(--space-3);
+  }
+
+  .h-scroll {
+    padding: 0 var(--space-6);
+    gap: var(--space-4);
+  }
+  
+  /* Cards get hover elevation */
+  .card {
+    transition: all var(--duration-normal) var(--ease-out);
+  }
+  
+  .card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+    border-color: rgba(240,246,252,0.15);
+  }
+
+  /* Avatar sizes scale up */
+  .avatar-xl {
+    width: 96px;
+    height: 96px;
+    font-size: var(--text-4xl);
+  }
+
+  /* Toast positioning */
+  #toast-container {
+    top: var(--space-6);
+    max-width: 440px;
+  }
+}
+
+/* ── Desktop (≥ 1024px) ── */
+@media (min-width: 1024px) {
+  #main-app {
+    grid-template-columns: 240px 1fr;
+  }
+
+  .screen {
+    max-width: 1000px;
+    padding: 0 var(--space-6);
+    padding-bottom: var(--space-8);
+  }
+
+  #bottom-nav {
+    width: 240px;
+    align-items: stretch;
+    padding: var(--space-6) var(--space-4);
+    gap: var(--space-2);
+  }
+
+  /* Nav logo area */
+  #bottom-nav::before {
+    content: 'VunaShorts';
+    display: block;
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-size: var(--text-xl);
+    background: var(--gradient-premium);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    padding: 0 var(--space-4);
+    margin-bottom: var(--space-6);
+  }
+
+  .nav-item {
+    flex-direction: row;
+    gap: var(--space-3);
+    width: 100%;
+    justify-content: flex-start;
+    padding: var(--space-3) var(--space-4);
+    border-radius: var(--radius-lg);
+    font-size: var(--text-sm);
+  }
+  
+  .nav-item .nav-icon {
+    font-size: 20px;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .nav-item .nav-label {
+    font-size: var(--text-sm);
+    font-weight: 500;
+  }
+
+  .nav-item.active {
+    background: var(--bg-secondary);
+    border: var(--border-subtle);
+  }
+
+  .nav-item.active::before {
+    display: none;
+  }
+
+  .nav-item-create {
+    margin-top: var(--space-4);
+    margin-bottom: var(--space-4);
+  }
+
+  .nav-item-create .nav-icon {
+    width: 28px;
+    height: 28px;
+    margin-top: 0;
+    font-size: 16px;
+    box-shadow: none;
+    background: var(--gradient-premium);
+    border-radius: var(--radius-md);
+  }
+
+  .nav-item-create .nav-label {
+    color: var(--accent-gold);
+  }
+
+  /* Desktop content grids */
+  .desktop-grid-2 {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-4);
+  }
+
+  .desktop-grid-3 {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-4);
+  }
+
+  .desktop-grid-4 {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--space-4);
+  }
+
+  /* Horizontal scrolls become grids on desktop */
+  .h-scroll {
+    flex-wrap: wrap;
+    overflow-x: visible;
+    padding: 0 var(--space-6);
+  }
+
+  /* Buttons get hover transforms */
+  .btn:hover {
+    transform: translateY(-1px);
+  }
+  
+  .press-effect:hover {
+    transform: translateY(-2px);
+    transition: transform var(--duration-normal) var(--ease-out);
+  }
+}
+
+/* ── Large Desktop (≥ 1280px) ── */
+@media (min-width: 1280px) {
+  #main-app {
+    grid-template-columns: 280px 1fr;
+  }
+
+  #bottom-nav {
+    width: 280px;
+    padding: var(--space-8) var(--space-5);
+  }
+
+  .screen {
+    max-width: 1100px;
+  }
+
+  .nav-item {
+    padding: var(--space-3) var(--space-5);
+  }
+
+  .nav-item .nav-label {
+    font-size: var(--text-base);
+  }
+}
+
+/* ── Ultrawide (≥ 1536px) ── */
+@media (min-width: 1536px) {
+  #app {
+    max-width: 1600px;
+    box-shadow: 0 0 120px rgba(0,0,0,0.6);
+  }
+
+  .screen {
+    max-width: 1200px;
+  }
+}
+
+/* ── Print ── */
+@media print {
+  #bottom-nav, #toast-container, .btn, .nav-badge {
+    display: none !important;
+  }
+  
+  body {
+    background: white;
+    color: black;
+  }
+}
+
+/* ── Reduced Motion ── */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ── Touch Device Optimizations ── */
+@media (hover: none) and (pointer: coarse) {
+  .btn:hover {
+    transform: none;
+  }
+  
+  .card:hover {
+    transform: none;
+    box-shadow: var(--shadow-md);
+  }
+  
+  .press-effect:hover {
+    transform: none;
+  }
+  
+  /* Larger touch targets */
+  .nav-item {
+    min-height: 44px;
+    min-width: 44px;
+  }
+  
+  .btn {
+    min-height: 44px;
+  }
+  
+  .tab {
+    min-height: 44px;
+  }
+}
+
+/* ── Dark mode preference (already dark, but ensure consistency) ── */
+@media (prefers-color-scheme: light) {
+  /* Keep dark theme - VunaShorts is always dark for cinematic feel */
+  :root {
+    color-scheme: dark;
+  }
+}
+
+/* ── High contrast mode ── */
+@media (prefers-contrast: high) {
+  :root {
+    --border-subtle: 1px solid rgba(240,246,252,0.2);
+    --border-default: 1px solid rgba(240,246,252,0.3);
+    --text-secondary: #A8B2BC;
+    --text-tertiary: #8B949E;
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "name": "VunaShorts",
+  "short_name": "VunaShorts",
+  "description": "Africa's Stories. One Minute at a Time.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0E1116",
+  "theme_color": "#D4A853",
+  "icons": [
+    {
+      "src": "/src/assets/app-icon.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

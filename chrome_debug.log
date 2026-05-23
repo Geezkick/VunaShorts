@@ -1,0 +1,154 @@
+--- Debug Start ---
+Starting Google Chrome in headless debug mode...
+Navigating to http://localhost:5174...
+[Browser Console]: [vite] connecting...
+[Browser Console]: [vite] connected.
+[Browser Console]: VunaShorts initializing...
+[Browser Console]: mountSplash called
+[Browser Console]: mountSplash timeout fired
+[Browser Console]: langSelect element found: true
+[Browser Console]: Removed hidden class from lang-select
+[Browser Console]: [vite] connecting...
+[Browser Console]: [vite] connected.
+[Browser Console]: VunaShorts initializing...
+[Browser Console]: mountSplash called
+[Browser Console]: mountSplash timeout fired
+[Browser Console]: langSelect element found: true
+[Browser Console]: Removed hidden class from lang-select
+--- HTML DUMP ---
+
+  <div id="app">
+    <div id="splash-screen">
+    <div id="splash-inner" style="position:fixed;inset:0;z-index:var(--z-splash);background:var(--bg-primary);display:flex;flex-direction:column;align-items:center;justify-content:center;overflow:hidden;">
+      <div class="splash-grain"></div>
+      <div class="splash-glow"></div>
+      <div class="splash-logo anim-scale-in" style="text-align:center;position:relative;z-index:2;">
+        <div style="font-family:var(--font-display);font-size:3.5rem;font-weight:900;letter-spacing:-0.03em;line-height:1;">
+          <span style="color:var(--text-primary);">Vuna</span><span style="background:var(--gradient-premium);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">Shorts</span>
+        </div>
+        <div style="font-family:var(--font-body);font-size:var(--text-sm);color:var(--text-secondary);margin-top:var(--space-3);letter-spacing:var(--tracking-wider);text-transform:uppercase;">
+          Africa's Stories. One Minute at a Time.
+        </div>
+        <div style="margin-top:var(--space-8);display:flex;justify-content:center;">
+          <div class="splash-loader"></div>
+        </div>
+      </div>
+      <div id="lang-select" class="" style="position: absolute; bottom: 0px; left: 0px; right: 0px; background: var(--bg-glass); backdrop-filter: blur(20px); border-top: var(--border-glass); border-radius: var(--radius-2xl) var(--radius-2xl) 0 0; padding: var(--space-6) var(--space-4) var(--space-8); z-index: 3; max-height: 70vh; overflow-y: auto; animation: slideUpModal 500ms var(--ease-cinematic) forwards;">
+        <h3 style="text-align:center;margin-bottom:var(--space-2);">Choose Your Language</h3>
+        <p style="text-align:center;font-size:var(--text-sm);margin-bottom:var(--space-6);">You can change this later in settings</p>
+        <div class="lang-grid stagger-children">
+          
+            <button class="lang-option btn btn-secondary" data-lang="en" style="display:flex;align-items:center;gap:var(--space-3);padding:var(--space-3) var(--space-4);width:100%;justify-content:flex-start;margin-bottom:var(--space-2);">
+              <span style="color:var(--text-secondary);display:flex;align-items:center;justify-content:center;"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon"><circle cx="12" cy="12" r="10"></circle><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"></path><path d="M2 12h20"></path></svg></span>
+              <div style="text-align:left;">
+                <div style="font-weight:600;color:var(--text-primary);font-size:var(--text-base);">English</div>
+                <div style="font-size:var(--text-xs);color:var(--text-tertiary);">English</div>
+              </div>
+            </button>
+          
+            <button class="lang-option btn btn-secondary" data-lang="sw" style="display:flex;align-items:center;gap:var(--space-3);padding:var(--space-3) var(--space-4);width:100%;justify-content:flex-start;margin-bottom:var(--space-2);">
+              <span style="color:var(--text-secondary);display:flex;align-items:center;justify-content:center;"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon"><circle cx="12" cy="12" r="10"></circle><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"></path><path d="M2 12h20"></path></svg></span>
+              <div style="text-align:left;">
+                <div style="font-weight:600;color:var(--text-primary);font-size:var(--text-base);">Swahili</div>
+                <div style="font-size:var(--text-xs);color:var(--text-tertiary);">Kiswahili</div>
+              </div>
+            </button>
+          
+            <button class="lang-option btn btn-secondary" data-lang="ha" style="display:flex;align-items:center;gap:var(--space-3);padding:var(--space-3) var(--space-4);width:100%;justify-content:flex-start;margin-bottom:var(--space-2);">
+              <span style="color:var(--text-secondary);display:flex;align-items:center;justify-content:center;"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon"><circle cx="12" cy="12" r="10"></circle><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"></path><path d="M2 12h20"></path></svg></span>
+              <div style="text-align:left;">
+                <div style="font-weight:600;color:var(--text-primary);font-size:var(--text-base);">Hausa</div>
+                <div style="font-size:var(--text-xs);color:var(--text-tertiary);">Hausa</div>
+              </div>
+            </button>
+          
+            <button class="lang-option btn btn-secondary" data-lang="yo" style="display:flex;align-items:center;gap:var(--space-3);padding:var(--space-3) var(--space-4);width:100%;justify-content:flex-start;margin-bottom:var(--space-2);">
+              <span style="color:var(--text-secondary);display:flex;align-items:center;justify-content:center;"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon"><circle cx="12" cy="12" r="10"></circle><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"></path><path d="M2 12h20"></path></svg></span>
+              <div style="text-align:left;">
+                <div style="font-weight:600;color:var(--text-primary);font-size:var(--text-base);">Yoruba</div>
+                <div style="font-size:var(--text-xs);color:var(--text-tertiary);">Yorùbá</div>
+              </div>
+            </button>
+          
+            <button class="lang-option btn btn-secondary" data-lang="ig" style="display:flex;align-items:center;gap:var(--space-3);padding:var(--space-3) var(--space-4);width:100%;justify-content:flex-start;margin-bottom:var(--space-2);">
+              <span style="color:var(--text-secondary);display:flex;align-items:center;justify-content:center;"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon"><circle cx="12" cy="12" r="10"></circle><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"></path><path d="M2 12h20"></path></svg></span>
+              <div style="text-align:left;">
+                <div style="font-weight:600;color:var(--text-primary);font-size:var(--text-base);">Igbo</div>
+                <div style="font-size:var(--text-xs);color:var(--text-tertiary);">Igbo</div>
+              </div>
+            </button>
+          
+            <button class="lang-option btn btn-secondary" data-lang="fr" style="display:flex;align-items:center;gap:var(--space-3);padding:var(--space-3) var(--space-4);width:100%;justify-content:flex-start;margin-bottom:var(--space-2);">
+              <span style="color:var(--text-secondary);display:flex;align-items:center;justify-content:center;"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon"><circle cx="12" cy="12" r="10"></circle><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"></path><path d="M2 12h20"></path></svg></span>
+              <div style="text-align:left;">
+                <div style="font-weight:600;color:var(--text-primary);font-size:var(--text-base);">French</div>
+                <div style="font-size:var(--text-xs);color:var(--text-tertiary);">Français</div>
+              </div>
+            </button>
+          
+            <button class="lang-option btn btn-secondary" data-lang="ar" style="display:flex;align-items:center;gap:var(--space-3);padding:var(--space-3) var(--space-4);width:100%;justify-content:flex-start;margin-bottom:var(--space-2);">
+              <span style="color:var(--text-secondary);display:flex;align-items:center;justify-content:center;"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon"><circle cx="12" cy="12" r="10"></circle><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"></path><path d="M2 12h20"></path></svg></span>
+              <div style="text-align:left;">
+                <div style="font-weight:600;color:var(--text-primary);font-size:var(--text-base);">Arabic</div>
+                <div style="font-size:var(--text-xs);color:var(--text-tertiary);">العربية</div>
+              </div>
+            </button>
+          
+            <button class="lang-option btn btn-secondary" data-lang="pt" style="display:flex;align-items:center;gap:var(--space-3);padding:var(--space-3) var(--space-4);width:100%;justify-content:flex-start;margin-bottom:var(--space-2);">
+              <span style="color:var(--text-secondary);display:flex;align-items:center;justify-content:center;"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon"><circle cx="12" cy="12" r="10"></circle><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"></path><path d="M2 12h20"></path></svg></span>
+              <div style="text-align:left;">
+                <div style="font-weight:600;color:var(--text-primary);font-size:var(--text-base);">Portuguese</div>
+                <div style="font-size:var(--text-xs);color:var(--text-tertiary);">Português</div>
+              </div>
+            </button>
+          
+            <button class="lang-option btn btn-secondary" data-lang="sh" style="display:flex;align-items:center;gap:var(--space-3);padding:var(--space-3) var(--space-4);width:100%;justify-content:flex-start;margin-bottom:var(--space-2);">
+              <span style="color:var(--text-secondary);display:flex;align-items:center;justify-content:center;"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon"><circle cx="12" cy="12" r="10"></circle><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"></path><path d="M2 12h20"></path></svg></span>
+              <div style="text-align:left;">
+                <div style="font-weight:600;color:var(--text-primary);font-size:var(--text-base);">Sheng</div>
+                <div style="font-size:var(--text-xs);color:var(--text-tertiary);">Sheng</div>
+              </div>
+            </button>
+          
+        </div>
+      </div>
+    </div>
+    <style>
+      .splash-grain { position:absolute;inset:0;opacity:0.03;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E"); }
+      .splash-glow { position:absolute;width:300px;height:300px;border-radius:50%;background:radial-gradient(circle,rgba(212,168,83,0.15),transparent 70%);top:50%;left:50%;transform:translate(-50%,-50%);animation:breathe 3s ease-in-out infinite; }
+      .splash-loader { width:32px;height:32px;border:2px solid rgba(255,255,255,0.1);border-top-color:var(--accent-gold);border-radius:50%;animation:spin 0.8s linear infinite; }
+    </style>
+  </div>
+    <div id="main-app" class="hidden">
+      <div id="screen-container"></div>
+      <nav id="bottom-nav" style="transition: transform 300ms var(--ease-out);">
+    <button class="nav-item active" data-path="home">
+      <div class="nav-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon"><rect width="18" height="18" x="3" y="3" rx="2"></rect><path d="M7 3v18"></path><path d="M3 7.5h4"></path><path d="M3 12h18"></path><path d="M3 16.5h4"></path><path d="M17 3v18"></path><path d="M17 7.5h4"></path><path d="M17 16.5h4"></path></svg></div>
+      <div class="nav-label">Home</div>
+    </button>
+    <button class="nav-item" data-path="discover">
+      <div class="nav-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon"><circle cx="12" cy="12" r="10"></circle><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"></polygon></svg></div>
+      <div class="nav-label">Discover</div>
+    </button>
+    <button class="nav-item nav-item-create" data-path="creator-studio">
+      <div class="nav-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg></div>
+      <div class="nav-label">Studio</div>
+    </button>
+    <button class="nav-item" data-path="crowdfunding">
+      <div class="nav-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon"><path d="M11 14h2a2 2 0 1 0 0-4h-3c-.6 0-1.1.2-1.4.6L3 16"></path><path d="m7 20 1.6-1.4c.3-.4.8-.6 1.4-.6h4c1.1 0 2.1-.4 2.8-1.2l4.6-4.4a2 2 0 0 0-2.75-2.91l-4.2 3.9"></path><path d="m2 15 6 6"></path><path d="M19.5 8.5c.7-.7 1.5-1.6 1.5-2.7A2.73 2.73 0 0 0 16 3.3c-1.2.5-2 1.2-2 1.2s-.8-.7-2-1.2a2.73 2.73 0 0 0-5 2.5c0 1.1.8 2 1.5 2.7L14 14"></path></svg></div>
+      <div class="nav-label">Fund</div>
+    </button>
+    <button class="nav-item" data-path="profile">
+      <div class="nav-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg></div>
+      <div class="nav-label">Profile</div>
+    </button>
+  </nav>
+    </div>
+  </div>
+  <div id="modal-overlay" class="hidden"></div>
+  <div id="toast-container"></div>
+  <script type="module" src="/src/main.js?t=1779561496343"></script>
+
+
+
+-----------------
