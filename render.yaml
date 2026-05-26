@@ -1,0 +1,21 @@
+services:
+  - type: web
+    name: vunashorts-backend
+    env: node
+    buildCommand: "cd server && npm install"
+    startCommand: "cd server && npm start"
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000
+      - key: DATABASE_URL
+        sync: false
+      - key: PESAPAL_CONSUMER_KEY
+        sync: false
+      - key: PESAPAL_CONSUMER_SECRET
+        sync: false
+      - key: PESAPAL_ENV
+        value: production
+      - key: FRONTEND_URL
+        sync: false
