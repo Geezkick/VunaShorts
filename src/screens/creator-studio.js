@@ -122,35 +122,6 @@ export function renderCreatorStudio() {
     </div>
 
     <!-- Modals -->
-    <div id="modal-upload" class="glass-overlay hidden" style="z-index:var(--z-modal);align-items:center;">
-      <div class="card" style="width:100%;max-width:400px;margin:var(--space-4);padding:var(--space-5);animation:slideUpModal 400ms var(--ease-cinematic) forwards;">
-        <h3 style="margin-bottom:var(--space-4);display:flex;align-items:center;gap:8px;">${Icons.Upload()} Upload Series</h3>
-        <div style="display:flex;flex-direction:column;gap:var(--space-3);margin-bottom:var(--space-4);">
-          <div>
-            <label style="font-size:var(--text-xs);color:var(--text-tertiary);margin-bottom:4px;display:block;">Title</label>
-            <input type="text" id="upload-title" class="input" placeholder="Enter series title...">
-          </div>
-          <div>
-            <label style="font-size:var(--text-xs);color:var(--text-tertiary);margin-bottom:4px;display:block;">Genre</label>
-            <select id="upload-genre" class="input" style="appearance:auto;">
-              <option value="drama">Drama</option><option value="comedy">Comedy</option><option value="romance">Romance</option>
-            </select>
-          </div>
-          <div>
-            <label style="font-size:var(--text-xs);color:var(--text-tertiary);margin-bottom:4px;display:block;">Episodes</label>
-            <input type="number" id="upload-episodes" class="input" value="10" min="1">
-          </div>
-        </div>
-        <div id="upload-progress-container" class="hidden" style="margin-bottom:var(--space-4);">
-          <div style="display:flex;justify-content:space-between;font-size:10px;margin-bottom:4px;"><span style="color:var(--accent-blue);">Uploading Video...</span><span id="upload-pct">0%</span></div>
-          <div class="progress-bar"><div id="upload-progress-fill" class="progress-bar-fill" style="width:0%;"></div></div>
-        </div>
-        <div style="display:flex;gap:var(--space-3);">
-          <button class="btn btn-secondary btn-full" id="btn-upload-cancel">Cancel</button>
-          <button class="btn btn-primary btn-full" id="btn-upload-confirm">Upload</button>
-        </div>
-      </div>
-    </div>
 
     <div id="modal-delete" class="glass-overlay hidden" style="z-index:var(--z-modal);align-items:center;">
       <div class="card" style="width:100%;max-width:400px;margin:var(--space-4);padding:var(--space-5);border-color:var(--error-color);">
@@ -310,47 +281,9 @@ export function mountCreatorStudio(el) {
 
   let activeSeriesId = null;
 
-  // Upload Logic
-  const modalUpload = el.querySelector('#modal-upload');
-  el.querySelector('#btn-upload').addEventListener('click', () => modalUpload.classList.remove('hidden'));
-  el.querySelector('#btn-upload-cancel').addEventListener('click', () => modalUpload.classList.add('hidden'));
-  
-  el.querySelector('#btn-upload-confirm').addEventListener('click', () => {
-    const title = el.querySelector('#upload-title').value;
-    const genre = el.querySelector('#upload-genre').value;
-    const eps = el.querySelector('#upload-episodes').value;
-    
-    if (!title) return showToast('Please enter a title', 'error');
-
-    el.querySelector('#btn-upload-confirm').disabled = true;
-    el.querySelector('#upload-progress-container').classList.remove('hidden');
-    
-    let pct = 0;
-    const fill = el.querySelector('#upload-progress-fill');
-    const txt = el.querySelector('#upload-pct');
-    
-    const interval = setInterval(() => {
-      pct += Math.random() * 15;
-      if (pct > 100) pct = 100;
-      fill.style.width = pct + '%';
-      txt.textContent = Math.floor(pct) + '%';
-      
-      if (pct === 100) {
-        clearInterval(interval);
-        setTimeout(() => {
-          appStore.addSeries({ title, genre, episodes: parseInt(eps), description: 'A brand new original series.' });
-          showToast('Series uploaded successfully!', 'success');
-          modalUpload.classList.add('hidden');
-          
-          // Reset modal
-          el.querySelector('#btn-upload-confirm').disabled = false;
-          el.querySelector('#upload-progress-container').classList.add('hidden');
-          fill.style.width = '0%';
-          txt.textContent = '0%';
-          el.querySelector('#upload-title').value = '';
-        }, 500);
-      }
-    }, 200);
+  // Upload Logic - Redirect to Professional Video Editor
+  el.querySelector('#btn-upload').addEventListener('click', () => {
+    document.dispatchEvent(new CustomEvent('navigate', { detail: 'video-editor' }));
   });
 
   // Delete Logic

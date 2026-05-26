@@ -5,10 +5,12 @@ import { appStore } from '../services/store.js';
 import { showToast } from '../components/utils.js';
 import { Icons } from '../components/icons.js';
 import logoUrl from '../assets/app-icon-transparent.png';
+import Hls from 'hls.js';
 
 let currentIndex = 0;
 let touchStartY = 0;
 let isSwiping = false;
+const hlsInstances = new Map();
 
 export function renderHomeFeed() {
   return `
@@ -80,13 +82,17 @@ function renderFeedCard(series, index) {
     'https://assets.mixkit.co/videos/preview/mixkit-hands-drumming-rhythmically-on-a-conga-43092-large.mp4'
   ];
   
-  const videoSrc = videoUrls[index % videoUrls.length];
+  const videoSrc = series.video_url 
+    ? `http://localhost:3000${series.video_url}` 
+    : videoUrls[index % videoUrls.length];
   
   return `
     <div class="feed-card ${index === 0 ? 'active' : 'below'}" data-index="${index}">
       <div class="feed-card-poster" style="${bgStyle};${isLocked ? 'filter:blur(8px) brightness(0.5);' : ''}"></div>
       ${!isLocked ? `
-        <video class="feed-card-video" src="${videoSrc}" loop playsinline muted autoplay style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:1;opacity:0;transition:opacity 0.4s;"></video>
+        <video class="feed-card-video" data-src="${videoSrc}" loop playsinline muted style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:1;opacity:0;transition:opacity 0.4s;">
+          ${videoSrc.endsWith('.m3u8') ? `<track label="AI Subtitles" kind="subtitles" srclang="en" src="${videoSrc.replace('.m3u8', '.vtt')}" default>` : ''}
+        </video>
       ` : ''}
       <div class="feed-card-gradient" style="z-index:2;"></div>
       ${isLocked ? `
@@ -106,12 +112,12 @@ function renderFeedCard(series, index) {
           <div class="feed-action-icon" style="color:white;">${Icons.MessageCircle()}</div>
           <span class="feed-action-label">${formatViews(Math.floor(Math.random() * 5000 + 500))}</span>
         </div>
-        <div class="feed-action" data-action="share">
-          <div class="feed-action-icon" style="color:white;">${Icons.Share()}</div>
-          <span class="feed-action-label">Share</span>
+        <div class="feed-action" data-action="cc">
+          <div class="feed-action-icon" style="color:white;">${Icons.MoreHorizontal()}</div>
+          <span class="feed-action-label">CC</span>
         </div>
-        <div class="feed-action" data-action="bookmark">
-          <div class="feed-action-icon" style="color:white;">${Icons.Bookmark()}</div>
+        <div class="feed-action" data-action="download">
+          <div class="feed-action-icon" style="color:white;">${Icons.Download()}</div>
           <span class="feed-action-label">Save</span>
         </div>
         <div class="feed-action" data-action="tip">
@@ -263,9 +269,44 @@ export function mountHomeFeed(el) {
       if (action === 'like') {
         icon.style.animation = 'heartbeat 600ms ease forwards';
         icon.style.background = 'rgba(248,81,73,0.2)';
-      } else if (action === 'bookmark') {
+      } else if (action === 'download') {
         icon.style.background = 'rgba(88,166,255,0.2)';
-        showToast('Saved to your collection', 'success');
+        showToast('Downloading episode for offline viewing...', 'info');
+        
+        // PWA Offline Cache logic
+        const activeCard = feedCards.querySelector('.feed-card.active');
+        const video = activeCard ? activeCard.querySelector('.feed-card-video') : null;
+        if (video && video.dataset.src) {
+          if ('caches' in window) {
+            caches.open('vunashorts-offline').then(cache => {
+              cache.add(video.dataset.src).then(() => {
+                showToast('Episode saved for offline viewing!', 'success');
+              }).catch(err => {
+                console.error("Cache add failed", err);
+                showToast('Failed to save episode', 'error');
+              });
+            });
+          } else {
+             showToast('Offline viewing not supported on this browser', 'error');
+          }
+        }
+      } else if (action === 'cc') {
+        const activeCard = feedCards.querySelector('.feed-card.active');
+        const video = activeCard ? activeCard.querySelector('.feed-card-video') : null;
+        if (video && video.textTracks && video.textTracks.length > 0) {
+          const track = video.textTracks[0];
+          if (track.mode === 'showing') {
+            track.mode = 'hidden';
+            icon.style.background = 'rgba(255,255,255,0.1)';
+            showToast('AI Translation Off', 'info');
+          } else {
+            track.mode = 'showing';
+            icon.style.background = 'var(--accent-gold-dim)';
+            showToast('AI Translation On', 'success');
+          }
+        } else {
+          showToast('No subtitles available for this episode', 'info');
+        }
       } else if (action === 'tip') {
         document.dispatchEvent(new CustomEvent('navigate', { detail: 'episode-lock' }));
       } else if (action === 'share') {
@@ -292,6 +333,13 @@ export function mountHomeFeed(el) {
     if (e.target === el) {
       if (unsubscribe) unsubscribe();
       clearInterval(progressInterval);
+      
+      // Cleanup HLS instances
+      for (let hls of hlsInstances.values()) {
+        hls.destroy();
+      }
+      hlsInstances.clear();
+      
       const activeVideo = feedCards.querySelector('.feed-card.active .feed-card-video');
       if (activeVideo) activeVideo.pause();
     }
@@ -305,6 +353,25 @@ function playActiveVideo(container) {
     if (!video) return;
     
     if (i === currentIndex) {
+      const src = video.dataset.src;
+      
+      // Attach HLS if needed
+      if (src && src.endsWith('.m3u8')) {
+        if (Hls.isSupported()) {
+          if (!hlsInstances.has(i)) {
+            const hls = new Hls({ autoStartLoad: false });
+            hls.loadSource(src);
+            hls.attachMedia(video);
+            hlsInstances.set(i, hls);
+          }
+          hlsInstances.get(i).startLoad();
+        } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+          if (!video.src) video.src = src;
+        }
+      } else {
+        if (!video.src) video.src = src;
+      }
+
       video.muted = window.feedMuted;
       video.currentTime = 0;
       video.style.opacity = '1';
@@ -319,6 +386,9 @@ function playActiveVideo(container) {
     } else {
       video.pause();
       video.style.opacity = '0';
+      if (hlsInstances.has(i)) {
+        hlsInstances.get(i).stopLoad();
+      }
     }
   });
 }

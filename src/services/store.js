@@ -2,6 +2,11 @@
 // VUNASHORTS — Global Store
 // ============================================
 import { SERIES as initialSeries, CREATORS } from '../data/mock-data.js';
+import { io } from 'socket.io-client';
+
+const API_URL = import.meta.env.VITE_API_URL || (window.location.hostname === 'localhost' ? 'http://localhost:3000' : 'https://vunashorts-backend.onrender.com');
+const socket = io(API_URL);
+window.__vunaSocket = socket; // Expose for payment listeners
 
 class Store {
   constructor() {
@@ -10,6 +15,15 @@ class Store {
     };
     this.listeners = {};
     this.init();
+
+    // Listen for real-time new series
+    socket.on('new_series', (series) => {
+      // Check if it already exists to avoid duplicates
+      if (!this.state.series.find(s => s.id === series.id)) {
+        this.state.series.unshift(series);
+        this.notify('series');
+      }
+    });
   }
 
   async init() {
@@ -66,42 +80,49 @@ class Store {
   }
 
   // Actions
-  async addSeries(newSeries) {
-    try {
-      const res = await fetch('/api/series', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(newSeries)
-      });
-      if (res.ok) {
-        // Refresh series list
-        await this.init();
-        return;
+  addSeries(data, onProgress) {
+    let formData = data;
+    if (!(data instanceof FormData)) {
+      formData = new FormData();
+      for (const key in data) {
+        if (data[key] !== undefined && data[key] !== null) {
+          if (Array.isArray(data[key])) {
+            formData.append(key, JSON.stringify(data[key]));
+          } else {
+            formData.append(key, data[key]);
+          }
+        }
       }
-    } catch (e) {
-      console.error('Failed to post to API', e);
     }
 
-    // Fallback if API fails
-    const series = {
-      id: 's' + (this.state.series.length + 1) + Date.now(),
-      creator: CREATORS[0], // Mocking the current logged-in user
-      views: '0',
-      rating: '0.0',
-      episodes: newSeries.episodes || 1,
-      freeEpisodes: 1,
-      pricePerEpisode: 50,
-      currency: 'KSh',
-      completionRate: 0,
-      tags: ['new'],
-      country: 'KE',
-      gradientPoster: 'linear-gradient(135deg, #1a1a2e, #16213e)',
-      ...newSeries
-    };
-    
-    this.state.series.unshift(series);
-    this.notify('series');
-    return series;
+    return new Promise((resolve, reject) => {
+      const xhr = new XMLHttpRequest();
+      xhr.open('POST', 'http://localhost:3000/api/series');
+      
+      xhr.upload.addEventListener('progress', (e) => {
+        if (e.lengthComputable && onProgress) {
+          const percentComplete = (e.loaded / e.total) * 100;
+          onProgress(percentComplete);
+        }
+      });
+
+      xhr.onload = async () => {
+        if (xhr.status >= 200 && xhr.status < 300) {
+          try {
+            // Note: the socket will also push the new series, but we can resolve here.
+            resolve(JSON.parse(xhr.response));
+          } catch (e) {
+            resolve({});
+          }
+        } else {
+          reject(new Error('Upload failed'));
+        }
+      };
+
+      xhr.onerror = () => reject(new Error('Network error during upload'));
+
+      xhr.send(formData);
+    });
   }
 
   deleteSeries(id) {

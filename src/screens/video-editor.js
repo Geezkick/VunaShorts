@@ -269,6 +269,7 @@ export function mountVideoEditor(el) {
   // Background Audio object
   let backgroundAudio = null;
   let currentTrackId = '';
+  let currentTrackUrl = '';
 
   const backBtn = el.querySelector('#btn-editor-back');
   const nextBtn = el.querySelector('#btn-editor-next');
@@ -407,35 +408,84 @@ export function mountVideoEditor(el) {
       
       overlay.classList.remove('hidden');
       
-      let pct = 0;
-      const interval = setInterval(() => {
-        pct += Math.floor(Math.random() * 12) + 4;
-        if (pct >= 100) {
-          pct = 100;
-          clearInterval(interval);
+      // We don't use the fake interval anymore
+      // We'll let appStore handle the actual XMLHttpRequest progress
+          const trimLeft = parseFloat(el.querySelector('#trim-range')?.style.left) || 0;
+          const trimRight = parseFloat(el.querySelector('#trim-range')?.style.right) || 0;
+          const trimStart = (trimLeft / 100) * 15;
+          const trimDuration = (100 - trimLeft - trimRight) / 100 * 15;
+
+          const edits = {
+            filter: selectedFilter,
+            brightness,
+            contrast,
+            saturation,
+            musicTrack: currentTrackUrl, // URL
+            musicVolume: parseInt(el.querySelector('#input-music-vol')?.value || 50),
+            originalVolume: parseInt(el.querySelector('#input-orig-vol')?.value || 100),
+            text: overlayText,
+            textColor,
+            textBold,
+            textItalic,
+            textOutline,
+            trimStart,
+            trimDuration,
+            speed: videoPreview?.playbackRate || 1.0,
+            effect: selectedEffect
+          };
+
+          const formData = new FormData();
+          formData.append('title', title);
+          formData.append('description', el.querySelector('#post-desc').value || 'Fresh episodes straight from VunaStudio.');
+          formData.append('genre', el.querySelector('#post-genre').value);
+          formData.append('episodes', parseInt(el.querySelector('#post-episodes').value) || 12);
+          formData.append('edits', JSON.stringify(edits));
+
+          const file = realFileInput?.files[0];
           
-          // Write to store.js state (Add new Series)
-          appStore.addSeries({
-            title,
-            description: el.querySelector('#post-desc').value || 'Fresh episodes straight from VunaStudio.',
-            genre: el.querySelector('#post-genre').value,
-            episodes: parseInt(el.querySelector('#post-episodes').value) || 12,
-            poster: '',
-            views: '1.2K',
-            rating: 5.0,
-            completionRate: 100,
-            tags: ['new', 'editors-pick']
-          });
+          let videoBlob = null;
+          let filename = 'video.mp4';
           
-          setTimeout(() => {
-            showToast('Series published successfully!', 'success');
-            document.dispatchEvent(new CustomEvent('navigate', { detail: 'home' }));
-          }, 500);
-        }
-        
-        pctText.textContent = pct + '%';
-        if (progressFill) progressFill.style.width = pct + '%';
-      }, 150);
+          if (file && videoPreview.src.startsWith('blob:')) {
+            videoBlob = file;
+            filename = file.name;
+          }
+
+          const processAndUpload = async () => {
+            if (!videoBlob && videoPreview.src) {
+              try {
+                pctText.textContent = 'Preparing...';
+                const res = await fetch(videoPreview.src);
+                videoBlob = await res.blob();
+                filename = 'template.mp4';
+              } catch (e) {
+                console.error("Failed to fetch template video", e);
+              }
+            }
+
+            if (videoBlob) {
+              formData.append('video', videoBlob, filename);
+            }
+
+            // Write to store.js state (Add new Series)
+            appStore.addSeries(formData, (p) => {
+              if (p >= 100) {
+                p = 100;
+                pctText.textContent = 'Processing Video...';
+              } else {
+                pctText.textContent = Math.floor(p) + '%';
+              }
+              if (progressFill) progressFill.style.width = p + '%';
+            }).then(() => {
+              showToast('Series published successfully!', 'success');
+              document.dispatchEvent(new CustomEvent('navigate', { detail: 'home' }));
+            }).catch(() => {
+              showToast('Failed to process video', 'error');
+              overlay.classList.add('hidden');
+            });
+          };
+
+          processAndUpload();
     }
   });
 
@@ -487,6 +537,7 @@ export function mountVideoEditor(el) {
 
       stopBackgroundMusic();
       currentTrackId = trackId;
+      currentTrackUrl = trackUrl;
 
       backgroundAudio = new Audio(trackUrl);
       backgroundAudio.loop = true;

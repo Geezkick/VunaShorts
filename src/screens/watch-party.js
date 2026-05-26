@@ -3,6 +3,9 @@
 // ============================================
 import { SERIES } from '../data/mock-data.js';
 import { Icons } from '../components/icons.js';
+import { io } from 'socket.io-client';
+
+const socket = io('http://localhost:3000');
 
 export function renderWatchParty() {
   const s = SERIES[2]; // Love in Joburg
@@ -69,19 +72,15 @@ export function mountWatchParty(el) {
   const chatMessages = el.querySelector('#chat-messages');
   const chatInput = el.querySelector('#wp-chat-input');
   
+  // Join Room
+  const partyId = 'room_123';
+  socket.emit('join_party', partyId);
+
   // React Button
   if (reactBtn && container) {
     reactBtn.addEventListener('click', () => {
-      const bubble = document.createElement('div');
-      bubble.innerHTML = [Icons.Heart(), Icons.Fire(), Icons.Star()][Math.floor(Math.random() * 3)];
-      bubble.style.position = 'absolute';
-      bubble.style.bottom = '0';
-      bubble.style.left = Math.random() * 30 + 'px';
-      bubble.style.fontSize = '24px';
-      bubble.style.color = ['var(--accent-rose)', 'var(--accent-gold)', 'white'][Math.floor(Math.random() * 3)];
-      bubble.style.animation = 'floatUp 2s ease-out forwards';
-      container.appendChild(bubble);
-      setTimeout(() => bubble.remove(), 2000);
+      const reactionType = ['heart', 'fire', 'star'][Math.floor(Math.random() * 3)];
+      socket.emit('party_react', { partyId, type: reactionType });
     });
   }
 
@@ -89,31 +88,7 @@ export function mountWatchParty(el) {
   if (giftBtn && container) {
     giftBtn.addEventListener('click', () => {
       if (navigator.vibrate) navigator.vibrate([50, 50, 50]);
-      const bubble = document.createElement('div');
-      bubble.innerHTML = '🎁';
-      bubble.style.position = 'absolute';
-      bubble.style.bottom = '0';
-      bubble.style.left = '10px';
-      bubble.style.fontSize = '48px';
-      bubble.style.filter = 'drop-shadow(0 0 10px rgba(212,168,83,0.8))';
-      bubble.style.animation = 'floatUp 2.5s ease-out forwards, pulse 0.5s infinite';
-      container.appendChild(bubble);
-      
-      const msg = document.createElement('div');
-      msg.className = 'anim-slide-up';
-      msg.innerHTML = `
-        <div style="display:flex;gap:var(--space-2);align-items:flex-start;margin-top:var(--space-2);">
-          <div class="avatar avatar-sm" style="border-color:var(--accent-gold);">ME</div>
-          <div style="background:rgba(212,168,83,0.2);padding:4px 8px;border-radius:var(--radius-md);border:1px solid rgba(212,168,83,0.3);">
-            <span style="font-size:10px;color:var(--accent-gold);font-weight:600;">@you</span>
-            <div style="font-size:var(--text-sm);">Sent a Premium Gift! 🎁</div>
-          </div>
-        </div>
-      `;
-      chatMessages.appendChild(msg);
-      chatMessages.scrollTop = chatMessages.scrollHeight;
-
-      setTimeout(() => bubble.remove(), 2500);
+      socket.emit('party_react', { partyId, type: 'gift', sender: 'ME' });
     });
   }
 
@@ -121,55 +96,82 @@ export function mountWatchParty(el) {
   if (chatInput && chatMessages) {
     chatInput.addEventListener('keydown', (e) => {
       if (e.key === 'Enter' && chatInput.value.trim()) {
-        const msg = document.createElement('div');
-        msg.className = 'anim-slide-up';
-        msg.innerHTML = `
-          <div style="display:flex;gap:var(--space-2);align-items:flex-start;margin-top:var(--space-2);">
-            <div class="avatar avatar-sm">ME</div>
-            <div>
-              <span style="font-size:10px;color:rgba(255,255,255,0.6);font-weight:600;">@you</span>
-              <div style="font-size:var(--text-sm);">${chatInput.value}</div>
-            </div>
-          </div>
-        `;
-        chatMessages.appendChild(msg);
-        chatMessages.scrollTop = chatMessages.scrollHeight;
+        socket.emit('party_chat', {
+          partyId,
+          text: chatInput.value,
+          sender: 'ME',
+          handle: '@you'
+        });
         chatInput.value = '';
       }
     });
   }
 
-  // Simulated live chat
-  const names = ['Amara', 'Kwame', 'Zuri', 'Jabari', 'Fatima', 'Chidi'];
-  const messages = ['Wait, what did he say?!', 'OMG 😱', 'This acting is top tier', 'Next episode when???', '😂😂😂', 'I knew it!'];
-  
-  const chatInterval = setInterval(() => {
-    if (Math.random() > 0.4 && chatMessages) {
-      const name = names[Math.floor(Math.random() * names.length)];
-      const text = messages[Math.floor(Math.random() * messages.length)];
+  // Listeners for Socket.io
+  socket.on('party_chat', (data) => {
+    const msg = document.createElement('div');
+    msg.className = 'anim-slide-up';
+    msg.innerHTML = `
+      <div style="display:flex;gap:var(--space-2);align-items:flex-start;margin-top:var(--space-2);">
+        <div class="avatar avatar-sm">${data.sender.charAt(0)}</div>
+        <div>
+          <span style="font-size:10px;color:rgba(255,255,255,0.6);font-weight:600;">${data.handle}</span>
+          <div style="font-size:var(--text-sm);">${data.text}</div>
+        </div>
+      </div>
+    `;
+    chatMessages.appendChild(msg);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+    
+    if (chatMessages.children.length > 30) {
+      chatMessages.removeChild(chatMessages.firstChild);
+    }
+  });
+
+  socket.on('party_react', (data) => {
+    const bubble = document.createElement('div');
+    
+    if (data.type === 'gift') {
+      bubble.innerHTML = '🎁';
+      bubble.style.position = 'absolute';
+      bubble.style.bottom = '0';
+      bubble.style.left = '10px';
+      bubble.style.fontSize = '48px';
+      bubble.style.filter = 'drop-shadow(0 0 10px rgba(212,168,83,0.8))';
+      bubble.style.animation = 'floatUp 2.5s ease-out forwards, pulse 0.5s infinite';
+      
       const msg = document.createElement('div');
       msg.className = 'anim-slide-up';
       msg.innerHTML = `
         <div style="display:flex;gap:var(--space-2);align-items:flex-start;margin-top:var(--space-2);">
-          <div class="avatar avatar-sm">${name[0]}</div>
-          <div>
-            <span style="font-size:10px;color:rgba(255,255,255,0.6);font-weight:600;">@${name.toLowerCase()}</span>
-            <div style="font-size:var(--text-sm);">${text}</div>
+          <div class="avatar avatar-sm" style="border-color:var(--accent-gold);">${data.sender.charAt(0)}</div>
+          <div style="background:rgba(212,168,83,0.2);padding:4px 8px;border-radius:var(--radius-md);border:1px solid rgba(212,168,83,0.3);">
+            <span style="font-size:10px;color:var(--accent-gold);font-weight:600;">@${data.sender.toLowerCase()}</span>
+            <div style="font-size:var(--text-sm);">Sent a Premium Gift! 🎁</div>
           </div>
         </div>
       `;
       chatMessages.appendChild(msg);
       chatMessages.scrollTop = chatMessages.scrollHeight;
-      
-      // Keep DOM light
-      if (chatMessages.children.length > 30) {
-        chatMessages.removeChild(chatMessages.firstChild);
-      }
+    } else {
+      bubble.innerHTML = data.type === 'heart' ? Icons.Heart() : (data.type === 'fire' ? Icons.Fire() : Icons.Star());
+      bubble.style.position = 'absolute';
+      bubble.style.bottom = '0';
+      bubble.style.left = Math.random() * 30 + 'px';
+      bubble.style.fontSize = '24px';
+      bubble.style.color = data.type === 'fire' ? 'var(--accent-rose)' : (data.type === 'heart' ? 'white' : 'var(--accent-gold)');
+      bubble.style.animation = 'floatUp 2s ease-out forwards';
     }
-  }, 2000);
+    
+    container.appendChild(bubble);
+    setTimeout(() => bubble.remove(), 2500);
+  });
 
   // Cleanup
   el.addEventListener('DOMNodeRemoved', (e) => {
-    if (e.target === el) clearInterval(chatInterval);
+    if (e.target === el) {
+      socket.off('party_chat');
+      socket.off('party_react');
+    }
   });
 }

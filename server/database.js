@@ -48,6 +48,40 @@ async function initDB() {
         views VARCHAR(20) DEFAULT '0',
         rating VARCHAR(10) DEFAULT '0.0',
         completion_rate INTEGER DEFAULT 0,
+        video_url VARCHAR(255),
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      );
+    `);
+
+    // Ensure existing tables are updated
+    await client.query(`ALTER TABLE series ADD COLUMN IF NOT EXISTS video_url VARCHAR(255);`);
+
+    // Create Payments Table
+    await client.query(`
+      CREATE TABLE IF NOT EXISTS payments (
+        id VARCHAR(100) PRIMARY KEY,
+        user_id VARCHAR(50) REFERENCES users(id),
+        series_id VARCHAR(50),
+        episode INTEGER,
+        amount NUMERIC(10,2) NOT NULL,
+        currency VARCHAR(10) DEFAULT 'KES',
+        payment_method VARCHAR(50),
+        status VARCHAR(20) DEFAULT 'pending',
+        pesapal_tracking_id VARCHAR(255),
+        pesapal_redirect_url TEXT,
+        description TEXT,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      );
+    `);
+
+    // Create Pesapal IPN Registration Table
+    await client.query(`
+      CREATE TABLE IF NOT EXISTS pesapal_ipn (
+        id SERIAL PRIMARY KEY,
+        notification_id VARCHAR(255) UNIQUE,
+        url TEXT NOT NULL,
+        ipn_type VARCHAR(20) DEFAULT 'GET',
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       );
     `);
