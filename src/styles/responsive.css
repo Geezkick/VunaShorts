@@ -111,8 +111,14 @@
     gap: var(--space-4);
     background: var(--bg-primary);
     backdrop-filter: none;
+    -webkit-backdrop-filter: none;
     position: sticky;
     top: 0;
+    left: 0;
+    transform: none;
+    border-radius: 0;
+    box-shadow: none;
+    max-width: none;
   }
 
   .nav-item {
@@ -241,6 +247,7 @@
   }
 
   .nav-item .nav-label {
+    display: block;
     font-size: var(--text-sm);
     font-weight: 500;
   }
