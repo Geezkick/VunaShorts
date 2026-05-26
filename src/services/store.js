@@ -4,7 +4,7 @@
 import { SERIES as initialSeries, CREATORS } from '../data/mock-data.js';
 import { io } from 'socket.io-client';
 
-const API_URL = import.meta.env.VITE_API_URL || (window.location.hostname === 'localhost' ? 'http://localhost:3000' : 'https://vunashorts-backend.onrender.com');
+const API_URL = import.meta.env.VITE_API_URL || (window.location.hostname === 'localhost' ? 'http://localhost:3000' : 'https://vunashorts.onrender.com');
 const socket = io(API_URL);
 window.__vunaSocket = socket; // Expose for payment listeners
 

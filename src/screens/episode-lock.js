@@ -6,7 +6,7 @@ import { SERIES, PAYMENT_METHODS } from '../data/mock-data.js';
 import { showToast } from '../components/utils.js';
 import { Icons } from '../components/icons.js';
 
-const API_URL = import.meta.env.VITE_API_URL || '';
+const API_URL = import.meta.env.VITE_API_URL || (window.location.hostname === 'localhost' ? 'http://localhost:3000' : 'https://vunashorts.onrender.com');
 
 export function renderEpisodeLock() {
   const s = SERIES[0];
