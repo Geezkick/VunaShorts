@@ -102,6 +102,10 @@ export function renderProfile() {
           </div>
         </div>
 
+        <button id="btn-install-app" class="btn btn-primary hidden" style="width:100%;display:flex;align-items:center;justify-content:center;gap:var(--space-2);margin-bottom:var(--space-4);background:var(--accent-blue);">
+          ${Icons.Download()} Install App
+        </button>
+
         <button id="btn-logout" class="btn btn-secondary" style="width:100%;display:flex;align-items:center;justify-content:center;gap:var(--space-2);color:var(--error-color);border-color:var(--error-color);">
           ${Icons.LogOut()} Log Out
         </button>
@@ -111,6 +115,36 @@ export function renderProfile() {
 }
 
 export function mountProfile() {
+  const installBtn = document.getElementById('btn-install-app');
+  
+  // Show button if installable
+  if (window.deferredInstallPrompt) {
+    installBtn?.classList.remove('hidden');
+  }
+
+  // Listen for the global event just in case it fires while on this screen
+  const onInstallable = () => installBtn?.classList.remove('hidden');
+  document.addEventListener('appInstallable', onInstallable);
+
+  if (installBtn) {
+    installBtn.addEventListener('click', async () => {
+      if (window.deferredInstallPrompt) {
+        window.deferredInstallPrompt.prompt();
+        const { outcome } = await window.deferredInstallPrompt.userChoice;
+        console.log(`User response to the install prompt: ${outcome}`);
+        window.deferredInstallPrompt = null;
+        installBtn.classList.add('hidden');
+      }
+    });
+  }
+
+  // Cleanup
+  document.getElementById('btn-install-app')?.parentElement.addEventListener('DOMNodeRemoved', (e) => {
+    if (e.target.parentElement === null) {
+      document.removeEventListener('appInstallable', onInstallable);
+    }
+  });
+
   const logoutBtn = document.getElementById('btn-logout');
   if (logoutBtn) {
     logoutBtn.addEventListener('click', () => {

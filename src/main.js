@@ -20,6 +20,15 @@ const updateSW = registerSW({
   },
 });
 
+// PWA Install Prompt
+window.deferredInstallPrompt = null;
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  window.deferredInstallPrompt = e;
+  // Dispatch a custom event so screens can show their install buttons
+  document.dispatchEvent(new Event('appInstallable'));
+});
+
 // Screens
 import { renderSplash, mountSplash } from './screens/splash.js';
 import { renderHomeFeed, mountHomeFeed } from './screens/home-feed.js';
