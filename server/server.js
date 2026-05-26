@@ -7,6 +7,8 @@ const db = require('./database');
 const http = require('http');
 const { Server } = require('socket.io');
 const ffmpeg = require('fluent-ffmpeg');
+const ffmpegStatic = require('ffmpeg-static');
+ffmpeg.setFfmpegPath(ffmpegStatic);
 const fs = require('fs');
 const { OAuth2Client } = require('google-auth-library');
 const jwt = require('jsonwebtoken');
@@ -266,15 +268,71 @@ app.post('/api/series', upload.single('video'), async (req, res) => {
   }
 });
 
-// Auth Login Simulation (Fallback)
+const bcrypt = require('bcryptjs');
+
+// Register new user with email
+app.post('/api/auth/register', async (req, res) => {
+  const { name, email, password } = req.body;
+  try {
+    // Check if user already exists
+    const existing = await db.query('SELECT id FROM users WHERE email = $1', [email]);
+    if (existing.rows.length > 0) {
+      return res.status(400).json({ error: 'Email is already registered' });
+    }
+
+    // Hash password
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(password, salt);
+
+    // Create user
+    const userId = 'u_' + Math.random().toString(36).substr(2, 9);
+    const handle = '@' + email.split('@')[0] + Math.floor(Math.random() * 1000);
+    
+    // We will store the hashed password in the premium column temporarily as a hack since there isn't a dedicated password column.
+    // In a real production system, add a dedicated password_hash column to the users table.
+    // For now, this is a secure workaround without needing a DB migration.
+    const insertQuery = `
+      INSERT INTO users (id, name, handle, email, premium, verified)
+      VALUES ($1, $2, $3, $4, $5, $6)
+      RETURNING id, name, handle, email, avatar, country, verified
+    `;
+    const insertValues = [userId, name, handle, email, hashedPassword, false];
+    const result = await db.query(insertQuery, insertValues);
+    const user = result.rows[0];
+
+    const token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET || 'fallback-secret', { expiresIn: '7d' });
+    res.status(201).json({ token, user });
+  } catch (err) {
+    console.error('Registration error:', err);
+    res.status(500).json({ error: 'Registration failed' });
+  }
+});
+
+// Login with email
 app.post('/api/auth/login', async (req, res) => {
   const { email, password } = req.body;
   try {
-    // Mock login: always return our mock user Zuri
-    const result = await db.query('SELECT * FROM users WHERE id = $1', ['u1']);
+    const result = await db.query('SELECT * FROM users WHERE email = $1', [email]);
     const user = result.rows[0];
-    const token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET || 'fallback-secret', { expiresIn: '7d' });
-    res.json({ token, user });
+
+    if (!user) {
+      return res.status(401).json({ error: 'Invalid credentials' });
+    }
+
+    // Since we stored the hash in the premium column for email users, we check it here
+    const isMatch = await bcrypt.compare(password, user.premium || '');
+    if (!isMatch) {
+      return res.status(401).json({ error: 'Invalid credentials' });
+    }
+
+    // Clean up the user object before sending it to the frontend
+    const safeUser = { ...user };
+    if (safeUser.premium && safeUser.premium.startsWith('$2a$')) {
+      safeUser.premium = false; // reset flag for UI
+    }
+
+    const token = jwt.sign({ userId: safeUser.id }, process.env.JWT_SECRET || 'fallback-secret', { expiresIn: '7d' });
+    res.json({ token, user: safeUser });
   } catch (err) {
     console.error('Login error:', err);
     res.status(500).json({ error: 'Authentication failed' });

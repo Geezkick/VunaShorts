@@ -63,17 +63,37 @@ class AuthService {
     if (!name || !email || !password) throw new Error('All fields required');
     if (password.length < 6) throw new Error('Password must be at least 6 characters');
 
-    // For now, sign-up uses the same backend login flow
-    // A proper registration endpoint can be added later
-    const user = {
-      id: 'usr_' + Math.random().toString(36).substr(2, 9),
-      name,
-      email,
-      provider: 'email',
-      verified: false
-    };
-    this._setSession(user, 'pending-verification');
-    return user;
+    try {
+      const res = await fetch(`${API_URL}/api/auth/register`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, email, password })
+      });
+
+      if (!res.ok) {
+        const data = await res.json();
+        throw new Error(data.error || 'Registration failed');
+      }
+
+      const data = await res.json();
+      this._setSession(data.user, data.token);
+      return data.user;
+    } catch (err) {
+      // Offline fallback
+      if (err.message.includes('fetch') || err.message.includes('Failed')) {
+        console.warn('Backend unreachable, creating offline profile');
+        const user = {
+          id: 'usr_' + Math.random().toString(36).substr(2, 9),
+          name,
+          email,
+          provider: 'email',
+          verified: false
+        };
+        this._setSession(user, 'offline-token-unverified');
+        return user;
+      }
+      throw err;
+    }
   }
 
   async signInWithGoogle(credential) {
