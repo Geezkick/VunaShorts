@@ -28,7 +28,7 @@ class Store {
 
   async init() {
     try {
-      const res = await fetch('/api/series');
+      const res = await fetch(`${API_URL}/api/series`);
       if (res.ok) {
         this.state.series = await res.json();
         this.notify('series');
@@ -97,7 +97,7 @@ class Store {
 
     return new Promise((resolve, reject) => {
       const xhr = new XMLHttpRequest();
-      xhr.open('POST', 'http://localhost:3000/api/series');
+      xhr.open('POST', `${API_URL}/api/series`);
       
       xhr.upload.addEventListener('progress', (e) => {
         if (e.lengthComputable && onProgress) {

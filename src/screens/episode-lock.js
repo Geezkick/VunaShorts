@@ -6,6 +6,8 @@ import { SERIES, PAYMENT_METHODS } from '../data/mock-data.js';
 import { showToast } from '../components/utils.js';
 import { Icons } from '../components/icons.js';
 
+const API_URL = import.meta.env.VITE_API_URL || '';
+
 export function renderEpisodeLock() {
   const s = SERIES[0];
   return `
@@ -112,7 +114,7 @@ export function mountEpisodeLock(el) {
       unlockBtn.disabled = true;
 
       try {
-        const response = await fetch('/api/payments/initiate', {
+        const response = await fetch(`${API_URL}/api/payments/initiate`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
@@ -147,7 +149,7 @@ export function mountEpisodeLock(el) {
           // Poll for payment status every 5 seconds
           pollInterval = setInterval(async () => {
             try {
-              const statusRes = await fetch(`/api/payments/status/${data.trackingId}`);
+              const statusRes = await fetch(`${API_URL}/api/payments/status/${data.trackingId}`);
               const statusData = await statusRes.json();
 
               if (statusData.local && statusData.local.status === 'completed') {

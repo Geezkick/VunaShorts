@@ -3,6 +3,8 @@ import { Icons } from '../components/icons.js';
 import { showToast } from '../components/utils.js';
 import logoUrl from '../assets/app-icon-transparent.png';
 
+const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID || '';
+
 export function renderAuthScreen() {
   return `
     <div id="auth-container" style="position:fixed;inset:0;z-index:var(--z-modal);background:var(--bg-primary);display:flex;flex-direction:column;overflow-y:auto;">
@@ -52,10 +54,11 @@ export function renderAuthScreen() {
         </div>
 
         <div class="social-auth stagger-children">
-          <button id="btn-apple" class="btn btn-apple btn-full" style="padding:var(--space-3);margin-bottom:var(--space-3);border-radius:14px;display:flex;align-items:center;justify-content:center;gap:var(--space-2);font-size:var(--text-sm);">
-            ${Icons.Apple()} Continue with Apple
-          </button>
-          <button id="btn-google" class="btn btn-google btn-full" style="padding:var(--space-3);border-radius:14px;display:flex;align-items:center;justify-content:center;gap:var(--space-2);font-size:var(--text-sm);">
+          <!-- Google Sign-In Button rendered by Google SDK -->
+          <div id="google-signin-btn" style="display:flex;justify-content:center;margin-bottom:var(--space-3);"></div>
+          
+          <!-- Fallback button if SDK doesn't load -->
+          <button id="btn-google-fallback" class="btn btn-google btn-full hidden" style="padding:var(--space-3);border-radius:14px;display:flex;align-items:center;justify-content:center;gap:var(--space-2);font-size:var(--text-sm);">
             ${Icons.Google()} Continue with Google
           </button>
         </div>
@@ -112,7 +115,7 @@ export function mountAuthScreen(onComplete) {
   });
 
   // Toggle Mode
-  toggleBtn.addEventListener('click', (e) => {
+  const handleToggle = (e) => {
     e.preventDefault();
     isSignUp = !isSignUp;
     
@@ -133,8 +136,10 @@ export function mountAuthScreen(onComplete) {
     }
     
     // Re-bind toggle after innerHTML change
-    document.getElementById('toggle-mode').addEventListener('click', toggleBtn.click);
-  });
+    document.getElementById('toggle-mode')?.addEventListener('click', handleToggle);
+  };
+
+  toggleBtn.addEventListener('click', handleToggle);
 
   // Handle Form Submit
   form.addEventListener('submit', async (e) => {
@@ -171,22 +176,67 @@ export function mountAuthScreen(onComplete) {
     }
   });
 
-  // Social Auth
-  document.getElementById('btn-apple').addEventListener('click', async () => {
-    try {
-      await authService.signInWithApple();
-      if (onComplete) onComplete();
-    } catch (err) {
-      showToast('Apple Sign In failed', 'error');
-    }
-  });
+  // Initialize Google Sign-In SDK
+  const initGoogle = () => {
+    if (typeof google !== 'undefined' && google.accounts && GOOGLE_CLIENT_ID) {
+      google.accounts.id.initialize({
+        client_id: GOOGLE_CLIENT_ID,
+        callback: handleGoogleResponse,
+        auto_select: false,
+        cancel_on_tap_outside: true,
+      });
 
-  document.getElementById('btn-google').addEventListener('click', async () => {
-    try {
-      await authService.signInWithGoogle();
-      if (onComplete) onComplete();
-    } catch (err) {
-      showToast('Google Sign In failed', 'error');
+      google.accounts.id.renderButton(
+        document.getElementById('google-signin-btn'),
+        {
+          theme: 'filled_black',
+          size: 'large',
+          width: 320,
+          shape: 'pill',
+          text: 'continue_with',
+          logo_alignment: 'center'
+        }
+      );
+    } else {
+      // Show fallback button if SDK doesn't load or no client ID
+      const fallbackBtn = document.getElementById('btn-google-fallback');
+      if (fallbackBtn) {
+        fallbackBtn.classList.remove('hidden');
+        fallbackBtn.addEventListener('click', () => {
+          showToast('Google Sign-In requires configuration. Use email for now.', 'info');
+        });
+      }
     }
-  });
+  };
+
+  async function handleGoogleResponse(response) {
+    if (!response.credential) {
+      showToast('Google Sign In cancelled', 'error');
+      return;
+    }
+
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = '<div class="splash-loader" style="width:20px;height:20px;border-width:2px;"></div>';
+
+    try {
+      await authService.signInWithGoogle(response.credential);
+      showToast('Signed in with Google!', 'success');
+
+      const container = document.getElementById('auth-container');
+      container.style.animation = 'fadeOut 300ms var(--ease-out) forwards';
+      setTimeout(() => {
+        container.remove();
+        if (onComplete) onComplete();
+      }, 300);
+    } catch (err) {
+      showToast(err.message, 'error');
+      submitBtn.textContent = 'Sign In';
+      submitBtn.disabled = false;
+    }
+  }
+
+  // Try to init Google after a short delay (SDK loads async)
+  setTimeout(initGoogle, 500);
+  // Also listen for late SDK load
+  window.addEventListener('load', () => setTimeout(initGoogle, 1000));
 }

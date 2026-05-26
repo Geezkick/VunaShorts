@@ -5,7 +5,8 @@ import { SERIES } from '../data/mock-data.js';
 import { Icons } from '../components/icons.js';
 import { io } from 'socket.io-client';
 
-const socket = io('http://localhost:3000');
+const API_URL = import.meta.env.VITE_API_URL || (window.location.hostname === 'localhost' ? 'http://localhost:3000' : 'https://vunashorts.onrender.com');
+const socket = io(API_URL);
 
 export function renderWatchParty() {
   const s = SERIES[2]; // Love in Joburg

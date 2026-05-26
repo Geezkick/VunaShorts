@@ -8,6 +8,8 @@ const http = require('http');
 const { Server } = require('socket.io');
 const ffmpeg = require('fluent-ffmpeg');
 const fs = require('fs');
+const { OAuth2Client } = require('google-auth-library');
+const jwt = require('jsonwebtoken');
 let fetch;
 import('node-fetch').then(module => fetch = module.default);
 
@@ -264,17 +266,63 @@ app.post('/api/series', upload.single('video'), async (req, res) => {
   }
 });
 
-// Auth Login Simulation
+// Auth Login Simulation (Fallback)
 app.post('/api/auth/login', async (req, res) => {
   const { email, password } = req.body;
   try {
     // Mock login: always return our mock user Zuri
     const result = await db.query('SELECT * FROM users WHERE id = $1', ['u1']);
     const user = result.rows[0];
-    res.json({ token: 'mock-jwt-token-123', user });
+    const token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET || 'fallback-secret', { expiresIn: '7d' });
+    res.json({ token, user });
   } catch (err) {
     console.error('Login error:', err);
     res.status(500).json({ error: 'Authentication failed' });
+  }
+});
+
+// Google Authentication
+const googleClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
+
+app.post('/api/auth/google', async (req, res) => {
+  try {
+    const { credential } = req.body;
+    
+    // Verify the Google JWT token
+    const ticket = await googleClient.verifyIdToken({
+      idToken: credential,
+      audience: process.env.GOOGLE_CLIENT_ID,
+    });
+    
+    const payload = ticket.getPayload();
+    const { email, name, picture, sub: googleId } = payload;
+    
+    // Check if user exists in our DB by email
+    let result = await db.query('SELECT * FROM users WHERE email = $1', [email]);
+    let user = result.rows[0];
+    
+    if (!user) {
+      // Create new user
+      const userId = 'u_' + Math.random().toString(36).substr(2, 9);
+      const handle = '@' + email.split('@')[0] + Math.floor(Math.random() * 1000);
+      
+      const insertQuery = `
+        INSERT INTO users (id, name, handle, email, avatar, country, premium, verified)
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+        RETURNING *
+      `;
+      const insertValues = [userId, name, handle, email, picture, 'KE', false, true];
+      const insertResult = await db.query(insertQuery, insertValues);
+      user = insertResult.rows[0];
+    }
+    
+    // Generate our own JWT
+    const token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET || 'fallback-secret', { expiresIn: '7d' });
+    
+    res.json({ token, user });
+  } catch (err) {
+    console.error('Google Auth Error:', err);
+    res.status(401).json({ error: 'Invalid Google credential' });
   }
 });
 
