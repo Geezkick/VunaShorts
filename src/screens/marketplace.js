@@ -95,4 +95,13 @@ export function mountMarketplace(el) {
       });
     });
   });
+
+  const filterBtn = el.querySelector('.see-all');
+  if (filterBtn) {
+    filterBtn.addEventListener('click', () => {
+      import('../components/utils.js').then(({ showToast }) => {
+        showToast('Opening advanced filters...', 'info');
+      });
+    });
+  }
 }

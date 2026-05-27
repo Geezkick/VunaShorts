@@ -43,9 +43,14 @@ function renderScreen(path, prev, opts) {
   }
   screenContainer.appendChild(newEl);
 
+  // Trigger reflow to start transition
+  requestAnimationFrame(() => {
+    newEl.classList.remove('screen-enter');
+  });
+
   // fire mount callbacks
   if (routes[path + ':mount']) {
-    setTimeout(() => routes[path + ':mount'](newEl), 50);
+    setTimeout(() => routes[path + ':mount'](newEl), 10);
   }
 }
 

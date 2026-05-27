@@ -3,27 +3,29 @@
 // ============================================
 
 import { Icons } from './icons.js';
+import { i18n } from '../services/i18n.js';
 
 export function renderNavBar() {
+  const t = i18n.t.bind(i18n);
   return `
     <button class="nav-item active" data-path="home">
       <div class="nav-icon">${Icons.Film()}</div>
-      <div class="nav-label">Home</div>
+      <div class="nav-label" id="nav-label-home">${t('home')}</div>
     </button>
     <button class="nav-item" data-path="discover">
       <div class="nav-icon">${Icons.Compass()}</div>
-      <div class="nav-label">Discover</div>
+      <div class="nav-label" id="nav-label-discover">${t('discover')}</div>
     </button>
     <button class="nav-item nav-item-create" id="btn-create-action">
       <div class="nav-icon" style="background:var(--gradient-premium);color:white;border-radius:var(--radius-full);width:40px;height:40px;display:flex;align-items:center;justify-content:center;box-shadow:var(--shadow-glow);">${Icons.Plus()}</div>
     </button>
-    <button class="nav-item" data-path="crowdfunding">
-      <div class="nav-icon">${Icons.HandHeart()}</div>
-      <div class="nav-label">Fund</div>
+    <button class="nav-item" data-path="premium">
+      <div class="nav-icon">${Icons.Crown()}</div>
+      <div class="nav-label" id="nav-label-premium">${t('premium')}</div>
     </button>
     <button class="nav-item" data-path="profile">
       <div class="nav-icon">${Icons.User()}</div>
-      <div class="nav-label">Profile</div>
+      <div class="nav-label" id="nav-label-profile">${t('profile')}</div>
     </button>
   `;
 }
@@ -37,7 +39,7 @@ export function updateNavState(path) {
   if (path === 'episode-lock' || path === 'watch-party') activeTab = 'home';
   if (path === 'marketplace') activeTab = 'discover';
   if (path === 'ai-engine') activeTab = 'creator-studio';
-  if (path === 'premium' || path === 'admin') activeTab = 'profile';
+  if (path === 'admin') activeTab = 'profile';
 
   nav.querySelectorAll('.nav-item').forEach(item => {
     item.classList.remove('active');
@@ -58,10 +60,29 @@ export function updateNavState(path) {
     });
   }
 
-  // Hide nav on full screen views
-  if (path === 'splash' || path === 'watch-party' || path === 'go-live' || path === 'video-editor' || path === 'inbox') {
+  // Hide nav on pre-login screens only
+  const mainApp = document.getElementById('main-app');
+  if (path === 'splash' || path === 'auth') {
     nav.style.transform = 'translateY(100%)';
+    nav.style.display = 'none';
+    if (mainApp) mainApp.classList.add('no-nav');
   } else {
     nav.style.transform = 'translateY(0)';
+    nav.style.display = 'flex';
+    if (mainApp) mainApp.classList.remove('no-nav');
   }
+}
+
+// Global listener to update nav labels when language changes
+if (typeof window !== 'undefined') {
+  i18n.onLangChange(() => {
+    const lHome = document.getElementById('nav-label-home');
+    const lDiscover = document.getElementById('nav-label-discover');
+    const lPremium = document.getElementById('nav-label-premium');
+    const lProfile = document.getElementById('nav-label-profile');
+    if (lHome) lHome.textContent = i18n.t('home');
+    if (lDiscover) lDiscover.textContent = i18n.t('discover');
+    if (lPremium) lPremium.textContent = i18n.t('premium');
+    if (lProfile) lProfile.textContent = i18n.t('profile');
+  });
 }

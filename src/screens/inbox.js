@@ -63,7 +63,7 @@ export function renderInbox() {
           <div style="flex:1;"><div style="font-weight:600;font-size:var(--text-sm);" id="chat-name"></div><div style="font-size:10px;color:var(--accent-emerald);">Online</div></div>
         </div>
         <div id="chat-messages" style="flex:1;overflow-y:auto;padding:var(--space-4);display:flex;flex-direction:column;gap:var(--space-3);"></div>
-        <div style="padding:var(--space-3) var(--space-4);display:flex;gap:var(--space-2);border-top:var(--border-subtle);background:var(--bg-secondary);">
+        <div style="padding:var(--space-3) var(--space-4) calc(var(--nav-height) + var(--space-3));display:flex;gap:var(--space-2);border-top:var(--border-subtle);background:var(--bg-secondary);">
           <input type="text" id="chat-input" class="input" placeholder="Message..." style="flex:1;border-radius:var(--radius-full);">
           <button class="btn btn-primary btn-icon" id="btn-send-msg" style="border-radius:50%;width:40px;height:40px;flex-shrink:0;">${Icons.ArrowRight()}</button>
         </div>
@@ -127,4 +127,12 @@ export function mountInbox(el) {
   };
   sendBtn.addEventListener('click', sendMsg);
   input.addEventListener('keydown', e => { if(e.key==='Enter') sendMsg(); });
+
+  // Compose Message
+  const composeBtn = el.querySelector('.btn-ghost.btn-icon:not(#btn-inbox-back)');
+  if (composeBtn) {
+    composeBtn.addEventListener('click', () => {
+      showToast('New message feature coming soon', 'info');
+    });
+  }
 }

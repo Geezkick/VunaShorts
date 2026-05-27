@@ -6,7 +6,7 @@ import { showToast } from '../components/utils.js';
 
 export function renderGoLive() {
   return `
-    <div id="go-live" class="full-screen" style="position:absolute;inset:0;background:#000;display:flex;flex-direction:column;z-index:50;overflow:hidden;">
+    <div id="go-live" class="screen" style="position:absolute;inset:0;background:#000;display:flex;flex-direction:column;overflow:hidden;">
       
       <!-- Camera Preview Background -->
       <div id="live-camera-preview" style="position:absolute;inset:0;background:linear-gradient(45deg, #2b1055, #7597de);opacity:0.6;background-size:cover;background-position:center;">
@@ -14,7 +14,7 @@ export function renderGoLive() {
       </div>
       
       <!-- Pre-Live Overlay -->
-      <div id="pre-live-overlay" style="position:absolute;inset:0;display:flex;flex-direction:column;padding:calc(var(--safe-top) + 16px) var(--space-4) var(--space-6);z-index:10;">
+      <div id="pre-live-overlay" style="position:absolute;inset:0;display:flex;flex-direction:column;padding:calc(var(--safe-top) + 16px) var(--space-4) calc(var(--nav-height) + var(--space-6));z-index:10;">
         <div style="display:flex;justify-content:space-between;align-items:center;">
           <button class="btn btn-ghost btn-icon btn-close-live" style="color:white;">${Icons.X()}</button>
           <button class="btn btn-ghost" style="color:white;font-size:var(--text-xs);"><span style="color:var(--accent-emerald);">${Icons.Settings()}</span> Settings</button>
@@ -32,8 +32,8 @@ export function renderGoLive() {
           </div>
           
           <div style="display:flex;gap:var(--space-6);">
-            <button class="btn btn-ghost" style="flex-direction:column;gap:8px;color:white;"><span style="background:rgba(255,255,255,0.2);padding:12px;border-radius:50%;">${Icons.Sparkles()}</span> Filters</button>
-            <button class="btn btn-ghost" style="flex-direction:column;gap:8px;color:white;"><span style="background:rgba(255,255,255,0.2);padding:12px;border-radius:50%;">${Icons.Zap()}</span> Enhance</button>
+            <button class="btn btn-ghost btn-pre-live-fx" style="flex-direction:column;gap:8px;color:white;"><span style="background:rgba(255,255,255,0.2);padding:12px;border-radius:50%;">${Icons.Sparkles()}</span> Filters</button>
+            <button class="btn btn-ghost btn-pre-live-fx" style="flex-direction:column;gap:8px;color:white;"><span style="background:rgba(255,255,255,0.2);padding:12px;border-radius:50%;">${Icons.Zap()}</span> Enhance</button>
           </div>
         </div>
         
@@ -41,7 +41,7 @@ export function renderGoLive() {
       </div>
 
       <!-- Live Broadcast Overlay -->
-      <div id="live-broadcast-overlay" class="hidden" style="position:absolute;inset:0;display:flex;flex-direction:column;padding:calc(var(--safe-top) + 16px) var(--space-4) var(--space-3);z-index:20;">
+      <div id="live-broadcast-overlay" class="hidden" style="position:absolute;inset:0;display:flex;flex-direction:column;padding:calc(var(--safe-top) + 16px) var(--space-4) calc(var(--nav-height) + var(--space-3));z-index:20;">
         <!-- Top HUD -->
         <div style="display:flex;justify-content:space-between;align-items:flex-start;">
           <div style="display:flex;align-items:center;background:rgba(0,0,0,0.5);border-radius:var(--radius-full);padding:4px 12px 4px 4px;gap:8px;">
@@ -73,9 +73,9 @@ export function renderGoLive() {
 
         <!-- Bottom Actions -->
         <div style="display:flex;gap:var(--space-3);align-items:center;">
-          <input type="text" class="input" placeholder="Say something..." style="flex:1;background:rgba(0,0,0,0.5);border:1px solid rgba(255,255,255,0.2);border-radius:var(--radius-full);">
-          <button class="btn btn-ghost btn-icon" style="background:rgba(0,0,0,0.5);border-radius:50%;color:var(--accent-gold);">${Icons.Gift()}</button>
-          <button class="btn btn-ghost btn-icon" style="background:rgba(0,0,0,0.5);border-radius:50%;color:var(--accent-rose);">${Icons.Share()}</button>
+          <input type="text" id="live-chat-input" class="input" placeholder="Say something..." style="flex:1;background:rgba(0,0,0,0.5);border:1px solid rgba(255,255,255,0.2);border-radius:var(--radius-full);">
+          <button class="btn btn-ghost btn-icon" id="btn-live-gift" style="background:rgba(0,0,0,0.5);border-radius:50%;color:var(--accent-gold);">${Icons.Gift()}</button>
+          <button class="btn btn-ghost btn-icon" id="btn-live-share" style="background:rgba(0,0,0,0.5);border-radius:50%;color:var(--accent-rose);">${Icons.Share()}</button>
         </div>
       </div>
       
@@ -129,6 +129,46 @@ export function mountGoLive(el) {
       }
     });
   });
+
+  el.querySelectorAll('.btn-pre-live-fx').forEach(btn => {
+    btn.addEventListener('click', () => {
+      showToast('Effect applied to camera!', 'info');
+    });
+  });
+
+  const chatInput = el.querySelector('#live-chat-input');
+  if (chatInput) {
+    chatInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' && chatInput.value.trim()) {
+        const chatEl = document.createElement('div');
+        chatEl.style.cssText = 'padding:4px 8px;background:rgba(212,168,83,0.3);border:1px solid var(--accent-gold);border-radius:8px;font-size:12px;width:fit-content;animation:slideInRight 300ms var(--ease-out);';
+        chatEl.innerHTML = `<span style="color:var(--accent-gold);font-weight:600;margin-right:8px;">Host (You)</span><span>${chatInput.value.trim()}</span>`;
+        chatStream.appendChild(chatEl);
+        chatStream.scrollTop = chatStream.scrollHeight;
+        chatInput.value = '';
+      }
+    });
+  }
+
+  const giftBtn = el.querySelector('#btn-live-gift');
+  if (giftBtn) {
+    giftBtn.addEventListener('click', () => {
+      showToast('You sent a Gift!', 'success');
+      const effectArea = el.querySelector('#live-effects-area');
+      const giftEl = document.createElement('div');
+      giftEl.style.cssText = `position:absolute;bottom:0;left:${Math.random()*80}%;font-size:48px;animation:floatUp 2s ease-out forwards;`;
+      giftEl.innerHTML = '🎁';
+      effectArea.appendChild(giftEl);
+      setTimeout(() => giftEl.remove(), 2000);
+    });
+  }
+
+  const shareBtn = el.querySelector('#btn-live-share');
+  if (shareBtn) {
+    shareBtn.addEventListener('click', () => {
+      showToast('Live stream link copied to clipboard!', 'success');
+    });
+  }
 
   el.querySelector('#btn-start-live').addEventListener('click', () => {
     const title = el.querySelector('#live-title').value || "My Awesome Stream";

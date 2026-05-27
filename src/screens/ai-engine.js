@@ -62,12 +62,12 @@ export function renderAIEngine() {
           <div class="card" style="padding:var(--space-4);">
             <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:var(--space-3);">
               <h4 style="display:flex;align-items:center;gap:8px;">${Icons.Film()} Generated Script</h4>
-              <button class="btn btn-ghost btn-sm">Copy</button>
+              <button class="btn btn-ghost btn-sm" id="btn-copy-script">Copy</button>
             </div>
             <div id="ai-script-text" style="font-family:var(--font-body);font-size:var(--text-sm);line-height:1.8;color:var(--text-secondary);white-space:pre-wrap;background:var(--bg-primary);padding:var(--space-4);border-radius:var(--radius-md);border:var(--border-subtle);max-height:300px;overflow-y:auto;"></div>
             <div style="display:flex;gap:var(--space-2);margin-top:var(--space-3);">
-              <button class="btn btn-secondary btn-sm flex-1" style="display:flex;align-items:center;justify-content:center;gap:4px;">${Icons.Sparkles()} Regenerate</button>
-              <button class="btn btn-gold btn-sm flex-1" style="display:flex;align-items:center;justify-content:center;gap:4px;">${Icons.Download()} Save</button>
+              <button class="btn btn-secondary btn-sm flex-1" id="btn-regen-script" style="display:flex;align-items:center;justify-content:center;gap:4px;">${Icons.Sparkles()} Regenerate</button>
+              <button class="btn btn-gold btn-sm flex-1" id="btn-save-script" style="display:flex;align-items:center;justify-content:center;gap:4px;">${Icons.Download()} Save</button>
             </div>
           </div>
         </div>
@@ -89,7 +89,7 @@ export function renderAIEngine() {
               </div>
               <div style="display:flex;gap:var(--space-2);margin-top:var(--space-2);justify-content:flex-end;">
                 <button class="btn btn-ghost btn-sm btn-use-cliffhanger">Use</button>
-                <button class="btn btn-ghost btn-sm">Edit</button>
+                <button class="btn btn-ghost btn-sm btn-edit-cliffhanger">Edit</button>
               </div>
             </div>
           `).join('')}
@@ -103,7 +103,7 @@ export function renderAIEngine() {
           <p style="font-size:var(--text-sm);color:var(--text-secondary);margin-bottom:var(--space-4);">Translate and generate subtitles in 9 African languages.</p>
           <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:var(--space-2);">
             ${['EN English', 'KE Swahili', 'KE Sheng', 'NG Hausa', 'NG Yoruba', 'NG Igbo', 'FR French', 'SA Arabic', 'BR Portuguese'].map(l => `
-              <button class="btn btn-secondary btn-sm" style="font-size:10px;">${l}</button>
+              <button class="btn btn-secondary btn-sm btn-lang-sel" style="font-size:10px;">${l}</button>
             `).join('')}
           </div>
           <button id="btn-generate-subtitles" class="btn btn-primary btn-full" style="margin-top:var(--space-4);">Generate Subtitles</button>
@@ -221,6 +221,40 @@ END OF EPISODE.`;
   el.querySelectorAll('.btn-use-cliffhanger').forEach(btn => {
     btn.addEventListener('click', () => {
       showToast('Cliffhanger saved to clipboard!', 'success');
+    });
+  });
+
+  el.querySelectorAll('.btn-edit-cliffhanger').forEach(btn => {
+    btn.addEventListener('click', () => {
+      showToast('Opening in Script Editor...', 'info');
+    });
+  });
+
+  // Script Output Buttons
+  const copyBtn = el.querySelector('#btn-copy-script');
+  if (copyBtn) copyBtn.addEventListener('click', () => showToast('Script copied to clipboard!', 'success'));
+
+  const saveBtn = el.querySelector('#btn-save-script');
+  if (saveBtn) saveBtn.addEventListener('click', () => showToast('Script saved to your Creator Studio', 'success'));
+
+  const regenBtn = el.querySelector('#btn-regen-script');
+  if (regenBtn) regenBtn.addEventListener('click', () => {
+    regenBtn.innerHTML = '<div class="splash-loader" style="width:14px;height:14px;border-width:2px;margin:0 auto;"></div>';
+    setTimeout(() => {
+      regenBtn.innerHTML = `${Icons.Sparkles()} Regenerate`;
+      showToast('New variation generated!', 'success');
+    }, 1500);
+  });
+
+  // Languages Selection
+  el.querySelectorAll('.btn-lang-sel').forEach(btn => {
+    btn.addEventListener('click', () => {
+      el.querySelectorAll('.btn-lang-sel').forEach(b => {
+        b.style.borderColor = 'transparent';
+        b.style.color = 'var(--text-primary)';
+      });
+      btn.style.borderColor = 'var(--accent-blue)';
+      btn.style.color = 'var(--accent-blue)';
     });
   });
 

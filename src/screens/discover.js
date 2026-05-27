@@ -5,6 +5,7 @@ import { CREATORS } from '../data/mock-data.js';
 import { appStore } from '../services/store.js';
 import { showToast } from '../components/utils.js';
 import { Icons } from '../components/icons.js';
+import { i18n } from '../services/i18n.js';
 
 export function renderDiscover() {
   const regions = [
@@ -15,10 +16,12 @@ export function renderDiscover() {
     { name: 'Tanzania', code: 'TZ', color: '#8957E5' }
   ];
 
+  const t = i18n.t.bind(i18n);
+
   return `
     <div class="screen" style="padding-bottom:calc(var(--nav-height) + 16px);">
       <div style="padding:calc(var(--safe-top) + 16px) var(--space-4) var(--space-4);display:flex;justify-content:space-between;align-items:center;">
-        <h1 style="font-size:var(--text-2xl);margin:0;">Discover</h1>
+        <h1 style="font-size:var(--text-2xl);margin:0;" id="discover-title">${t('discoverTitle')}</h1>
         <button class="btn btn-ghost btn-icon" id="btn-discover-notif" style="position:relative;">
           ${Icons.Bell()}
           <span class="nav-badge" style="top:4px;right:4px;"></span>
@@ -29,17 +32,17 @@ export function renderDiscover() {
         <!-- Search Bar -->
         <div style="position:relative;margin-bottom:var(--space-6);">
           <div style="position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--text-tertiary);">${Icons.Search()}</div>
-          <input type="text" class="input search-input" placeholder="Search creators, series, or genres..." style="padding-left:40px;border-radius:var(--radius-full);background:var(--bg-secondary);">
+          <input type="text" id="discover-search" class="input search-input" placeholder="${t('searchPlaceholder')}" style="padding-left:40px;border-radius:var(--radius-full);background:var(--bg-secondary);">
         </div>
 
         <!-- Trending Now -->
-        <div class="section-header"><h3><span style="display:inline-flex;align-items:center;gap:8px;vertical-align:bottom;color:var(--accent-blue);">${Icons.Trending()}</span> Trending Now</h3></div>
+        <div class="section-header"><h3><span style="display:inline-flex;align-items:center;gap:8px;vertical-align:bottom;color:var(--accent-blue);">${Icons.Trending()}</span> <span id="discover-trending-title">${t('trendingNow')}</span></h3></div>
         <div id="discover-trending-list" class="desktop-grid-2" style="display:flex;flex-direction:column;gap:var(--space-3);margin-bottom:var(--space-6);">
           <!-- Rendered via JS -->
         </div>
 
         <!-- Regions -->
-        <div class="section-header"><h3>Regions</h3></div>
+        <div class="section-header"><h3 id="discover-regions-title">${t('regions')}</h3></div>
         <div class="h-scroll" style="padding-bottom:var(--space-6);">
           ${regions.map(r => `
             <div class="press-effect region-card" data-region="${r.name}" style="width:120px;padding:var(--space-4);background:var(--bg-secondary);border-radius:var(--radius-lg);border:var(--border-subtle);cursor:pointer;text-align:center;">
@@ -62,7 +65,24 @@ export function mountDiscover(el) {
     const listEl = el.querySelector('#discover-trending-list');
     if (!listEl) return;
     
-    const trending = [...appStore.getSeries()].sort((a, b) => parseFloat(b.views) - parseFloat(a.views));
+    const allSeries = appStore.getSeries();
+
+    if (!allSeries || allSeries.length === 0) {
+      // Skeleton UI
+      listEl.innerHTML = Array(4).fill(0).map(() => `
+        <div class="card" style="display:flex;gap:var(--space-3);padding:var(--space-2);">
+          <div style="width:100px;height:140px;border-radius:var(--radius-md);background:var(--bg-tertiary);animation:pulse 1.5s infinite;"></div>
+          <div style="flex:1;padding:var(--space-2) 0;">
+            <div style="width:40px;height:14px;border-radius:4px;background:var(--bg-tertiary);margin-bottom:var(--space-1);animation:pulse 1.5s infinite;"></div>
+            <div style="width:80%;height:18px;border-radius:4px;background:var(--bg-tertiary);margin-bottom:var(--space-2);animation:pulse 1.5s infinite;"></div>
+            <div style="width:50%;height:14px;border-radius:4px;background:var(--bg-tertiary);animation:pulse 1.5s infinite;"></div>
+          </div>
+        </div>
+      `).join('');
+      return;
+    }
+
+    const trending = [...allSeries].sort((a, b) => parseFloat(b.views) - parseFloat(a.views));
     listEl.innerHTML = trending.slice(0, 5).map((s, i) => `
       <div class="card press-effect" style="display:flex;gap:var(--space-3);padding:var(--space-2);cursor:pointer;" onclick="document.dispatchEvent(new CustomEvent('navigate',{detail:'watch-party'}))">
         <div style="width:100px;height:140px;border-radius:var(--radius-md);overflow:hidden;flex-shrink:0;position:relative;">
@@ -74,7 +94,7 @@ export function mountDiscover(el) {
             ${s.tags.map(t => `<span class="badge ${t === 'promoted' ? 'badge-gold' : ''}" style="font-size:9px;">${t.toUpperCase()}</span>`).join('')}
           </div>
           <h4 style="font-size:var(--text-base);margin-bottom:4px;line-height:1.2;">${s.title}</h4>
-          <p style="font-size:var(--text-xs);color:var(--text-secondary);margin-bottom:var(--space-2);">${s.episodes} episodes</p>
+          <p style="font-size:var(--text-xs);color:var(--text-secondary);margin-bottom:var(--space-2);">${s.episodes} ${i18n.t('episodes')}</p>
           <div style="display:flex;align-items:center;gap:var(--space-2);font-size:var(--text-xs);color:var(--text-tertiary);">
             <div class="avatar avatar-sm" style="width:20px;height:20px;font-size:10px;">${s.creator.avatar}</div>
             ${s.creator.name}
@@ -135,8 +155,25 @@ export function mountDiscover(el) {
     });
   }
 
+  // Update text dynamically on language change
+  const langSub = i18n.onLangChange(() => {
+    const tDiscover = el.querySelector('#discover-title');
+    const tSearch = el.querySelector('#discover-search');
+    const tTrending = el.querySelector('#discover-trending-title');
+    const tRegions = el.querySelector('#discover-regions-title');
+    
+    if (tDiscover) tDiscover.textContent = i18n.t('discoverTitle');
+    if (tSearch) tSearch.placeholder = i18n.t('searchPlaceholder');
+    if (tTrending) tTrending.textContent = i18n.t('trendingNow');
+    if (tRegions) tRegions.textContent = i18n.t('regions');
+    renderTrending();
+  });
+
   // Cleanup
   el.addEventListener('DOMNodeRemoved', (e) => {
-    if (e.target === el && unsubscribe) unsubscribe();
+    if (e.target === el) {
+      if (unsubscribe) unsubscribe();
+      langSub();
+    }
   });
 }

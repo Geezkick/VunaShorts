@@ -76,4 +76,12 @@ export function renderAdmin() {
   `;
 }
 
-export function mountAdmin() {}
+export function mountAdmin(el) {
+  el.querySelectorAll('.card').forEach(card => {
+    card.addEventListener('click', () => {
+      import('../components/utils.js').then(({ showToast }) => {
+        showToast('Opening admin module...', 'info');
+      });
+    });
+  });
+}

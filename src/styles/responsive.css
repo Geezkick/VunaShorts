@@ -19,6 +19,29 @@
     padding: var(--space-3) var(--space-6);
     font-size: var(--text-sm);
   }
+
+  /* Ensure nav fits on small screens */
+  #bottom-nav {
+    width: calc(100% - var(--space-6));
+    padding: var(--space-1) var(--space-1);
+    height: 58px;
+  }
+
+  .nav-item {
+    width: 42px;
+    height: 42px;
+  }
+
+  .nav-item .nav-icon {
+    font-size: 20px;
+  }
+
+  .nav-item-create .nav-icon {
+    width: 38px;
+    height: 38px;
+    margin-top: -12px;
+    font-size: 20px;
+  }
 }
 
 /* ── Tablet Portrait (≥ 600px) ── */
@@ -76,6 +99,11 @@
     overflow: hidden;
   }
 
+  #main-app.no-nav {
+    display: flex !important;
+    flex-direction: column;
+  }
+
   #screen-container {
     overflow: hidden;
     position: relative;
@@ -115,8 +143,13 @@
     position: sticky;
     top: 0;
     left: 0;
-    transform: none;
+    right: auto;
+    bottom: auto;
+    margin: 0;
+    transform: none !important;
     border-radius: 0;
+    border: none;
+    border-right: var(--border-subtle);
     box-shadow: none;
     max-width: none;
   }
@@ -125,6 +158,9 @@
     width: 56px;
     padding: var(--space-2);
     border-radius: var(--radius-lg);
+    flex: none;
+    max-width: none;
+    height: auto;
   }
 
   .nav-item:hover {

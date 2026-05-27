@@ -41,12 +41,12 @@ const STICKERS = ['🔥', '❤️', '👑', '✨', '🌍', '🎙️', '😂', '�
 
 export function renderVideoEditor() {
   return `
-    <div id="video-editor" class="full-screen" style="position:absolute;inset:0;background:var(--bg-primary);display:flex;flex-direction:column;z-index:50;">
+    <div id="video-editor" class="screen" style="position:absolute;inset:0;background:var(--bg-primary);display:flex;flex-direction:column;">
       <!-- Header -->
       <div style="padding:calc(var(--safe-top) + 12px) var(--space-4) var(--space-3);display:flex;justify-content:space-between;align-items:center;background:rgba(0,0,0,0.6);backdrop-filter:blur(10px);z-index:2;border-bottom:var(--border-subtle);">
         <button class="btn btn-ghost btn-icon" id="btn-editor-back" style="color:var(--text-primary);">${Icons.X()}</button>
         <div id="editor-step-title" style="font-weight:700;font-size:var(--text-base);letter-spacing:0.02em;">Select Media</div>
-        <button class="btn btn-primary btn-sm hidden" id="btn-editor-next" style="border-radius:20px;padding:6px 18px;">Next</button>
+        <button class="btn btn-sm hidden" id="btn-editor-next" style="background:linear-gradient(135deg, var(--accent-gold), var(--accent-rose));color:#fff;font-weight:700;border:none;border-radius:20px;padding:6px 18px;box-shadow:0 4px 12px rgba(212,168,83,0.4);">Next</button>
       </div>
 
       <!-- Step 1: Media Library & Upload -->
@@ -94,27 +94,27 @@ export function renderVideoEditor() {
 
         <!-- Suite Control Board -->
         <div id="editor-tools-panel" style="height:260px;background:var(--bg-secondary);border-top:1px solid rgba(255,255,255,0.08);display:flex;flex-direction:column;z-index:5;">
-          <!-- Tabs Navigation (Horizontal Scrolling Tabs) -->
-          <div style="display:flex;overflow-x:auto;scrollbar-width:none;border-bottom:1px solid rgba(255,255,255,0.06);background:rgba(0,0,0,0.2);">
-            <div style="display:flex;min-width:max-content;width:100%;">
-              <button class="editor-tool-tab active" data-tool="trim" style="flex:1;padding:12px var(--space-3);background:none;border:none;color:var(--text-primary);font-size:11px;font-weight:600;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px;transition:all 0.2s;"><span style="color:var(--accent-blue);">${Icons.Film()}</span>Trim</button>
-              <button class="editor-tool-tab" data-tool="music" style="flex:1;padding:12px var(--space-3);background:none;border:none;color:var(--text-secondary);font-size:11px;font-weight:600;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px;transition:all 0.2s;"><span style="color:var(--accent-gold);">${Icons.Music()}</span>Music</button>
-              <button class="editor-tool-tab" data-tool="filters" style="flex:1;padding:12px var(--space-3);background:none;border:none;color:var(--text-secondary);font-size:11px;font-weight:600;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px;transition:all 0.2s;"><span style="color:var(--accent-emerald);">${Icons.Star()}</span>Filters</button>
-              <button class="editor-tool-tab" data-tool="adjust" style="flex:1;padding:12px var(--space-3);background:none;border:none;color:var(--text-secondary);font-size:11px;font-weight:600;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px;transition:all 0.2s;"><span style="color:var(--accent-blue);">${Icons.Sliders()}</span>Adjust</button>
-              <button class="editor-tool-tab" data-tool="effects" style="flex:1;padding:12px var(--space-3);background:none;border:none;color:var(--text-secondary);font-size:11px;font-weight:600;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px;transition:all 0.2s;"><span style="color:var(--accent-rose);">${Icons.Sparkles()}</span>Effects</button>
-              <button class="editor-tool-tab" data-tool="text" style="flex:1;padding:12px var(--space-3);background:none;border:none;color:var(--text-secondary);font-size:11px;font-weight:600;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px;transition:all 0.2s;"><span style="color:var(--text-primary);">${Icons.Pen()}</span>Text</button>
-              <button class="editor-tool-tab" data-tool="stickers" style="flex:1;padding:12px var(--space-3);background:none;border:none;color:var(--text-secondary);font-size:11px;font-weight:600;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px;transition:all 0.2s;"><span style="color:var(--accent-gold);">${Icons.Smile()}</span>Stickers</button>
+          <!-- Tabs Navigation (Premium Pill Bar) -->
+          <div style="display:flex;overflow-x:auto;scrollbar-width:none;padding:12px var(--space-4);background:linear-gradient(to bottom, rgba(0,0,0,0.5), transparent);border-bottom:1px solid rgba(255,255,255,0.04);">
+            <div style="display:flex;gap:8px;min-width:max-content;width:100%;">
+              <button class="editor-tool-tab active" data-tool="trim" style="padding:8px 16px;background:rgba(255,255,255,0.1);border-radius:20px;border:1px solid rgba(255,255,255,0.1);color:var(--text-primary);font-size:12px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:6px;transition:all 0.2s;"><span style="color:var(--accent-blue);">${Icons.Film()}</span> Trim</button>
+              <button class="editor-tool-tab" data-tool="music" style="padding:8px 16px;background:transparent;border-radius:20px;border:1px solid transparent;color:var(--text-secondary);font-size:12px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:6px;transition:all 0.2s;"><span style="color:var(--accent-gold);">${Icons.Music()}</span> Music</button>
+              <button class="editor-tool-tab" data-tool="filters" style="padding:8px 16px;background:transparent;border-radius:20px;border:1px solid transparent;color:var(--text-secondary);font-size:12px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:6px;transition:all 0.2s;"><span style="color:var(--accent-emerald);">${Icons.Star()}</span> Filters</button>
+              <button class="editor-tool-tab" data-tool="adjust" style="padding:8px 16px;background:transparent;border-radius:20px;border:1px solid transparent;color:var(--text-secondary);font-size:12px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:6px;transition:all 0.2s;"><span style="color:var(--accent-blue);">${Icons.Sliders()}</span> Adjust</button>
+              <button class="editor-tool-tab" data-tool="effects" style="padding:8px 16px;background:transparent;border-radius:20px;border:1px solid transparent;color:var(--text-secondary);font-size:12px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:6px;transition:all 0.2s;"><span style="color:var(--accent-rose);">${Icons.Sparkles()}</span> Effects</button>
+              <button class="editor-tool-tab" data-tool="text" style="padding:8px 16px;background:transparent;border-radius:20px;border:1px solid transparent;color:var(--text-secondary);font-size:12px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:6px;transition:all 0.2s;"><span style="color:var(--text-primary);">${Icons.Pen()}</span> Text</button>
+              <button class="editor-tool-tab" data-tool="stickers" style="padding:8px 16px;background:transparent;border-radius:20px;border:1px solid transparent;color:var(--text-secondary);font-size:12px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:6px;transition:all 0.2s;"><span style="color:var(--accent-gold);">${Icons.Smile()}</span> Stickers</button>
             </div>
           </div>
 
           <!-- 1. Trim Panel -->
-          <div id="tool-trim" class="tool-panel" style="flex:1;padding:var(--space-4);display:flex;flex-direction:column;justify-content:center;gap:12px;">
+          <div id="tool-trim" class="tool-panel anim-slide-up" style="flex:1;padding:var(--space-4);display:flex;flex-direction:column;justify-content:center;gap:12px;">
             <div style="display:flex;justify-content:space-between;font-size:11px;font-family:var(--font-mono);color:var(--text-tertiary);"><span id="trim-start">00:00</span><span id="trim-end">00:15</span></div>
-            <div style="position:relative;height:52px;background:var(--bg-tertiary);border-radius:8px;overflow:hidden;border:1px solid rgba(255,255,255,0.06);">
-              <div style="position:absolute;inset:0;display:flex;">${Array(14).fill(0).map(()=>`<div style="flex:1;border-right:1px solid rgba(255,255,255,0.04);height:100%;"></div>`).join('')}</div>
-              <div id="trim-range" style="position:absolute;left:0%;right:0%;top:0;bottom:0;border:2.5px solid var(--accent-gold);background:rgba(212,168,83,0.12);cursor:grab;border-radius:6px;">
-                <div class="trim-handle" data-side="left" style="position:absolute;left:-8px;top:0;bottom:0;width:18px;cursor:ew-resize;display:flex;align-items:center;justify-content:center;z-index:2;"><div style="width:5px;height:26px;background:var(--accent-gold);border-radius:3px;box-shadow:0 0 6px rgba(0,0,0,0.5);"></div></div>
-                <div class="trim-handle" data-side="right" style="position:absolute;right:-8px;top:0;bottom:0;width:18px;cursor:ew-resize;display:flex;align-items:center;justify-content:center;z-index:2;"><div style="width:5px;height:26px;background:var(--accent-gold);border-radius:3px;box-shadow:0 0 6px rgba(0,0,0,0.5);"></div></div>
+            <div style="position:relative;height:56px;background:rgba(0,0,0,0.4);border-radius:12px;overflow:hidden;border:1px solid rgba(255,255,255,0.1);box-shadow:inset 0 4px 10px rgba(0,0,0,0.5);">
+              <div style="position:absolute;inset:0;display:flex;">${Array(14).fill(0).map(()=>`<div style="flex:1;border-right:1px solid rgba(255,255,255,0.03);height:100%;"></div>`).join('')}</div>
+              <div id="trim-range" style="position:absolute;left:0%;right:0%;top:0;bottom:0;border:3px solid var(--accent-gold);background:rgba(212,168,83,0.15);cursor:grab;border-radius:8px;box-shadow:0 0 15px rgba(212,168,83,0.2);">
+                <div class="trim-handle" data-side="left" style="position:absolute;left:-10px;top:0;bottom:0;width:20px;cursor:ew-resize;display:flex;align-items:center;justify-content:center;z-index:2;"><div style="width:6px;height:30px;background:var(--accent-gold);border-radius:4px;box-shadow:0 0 10px rgba(212,168,83,0.6);"></div></div>
+                <div class="trim-handle" data-side="right" style="position:absolute;right:-10px;top:0;bottom:0;width:20px;cursor:ew-resize;display:flex;align-items:center;justify-content:center;z-index:2;"><div style="width:6px;height:30px;background:var(--accent-gold);border-radius:4px;box-shadow:0 0 10px rgba(212,168,83,0.6);"></div></div>
               </div>
             </div>
             <div style="display:flex;justify-content:center;">
@@ -122,15 +122,15 @@ export function renderVideoEditor() {
             </div>
           </div>
 
-          <!-- 2. Music Panel (Real Background Sound Addition) -->
-          <div id="tool-music" class="tool-panel hidden" style="flex:1;padding:var(--space-3) var(--space-4);display:flex;flex-direction:column;gap:12px;overflow-y:auto;">
-            <div style="display:flex;gap:10px;overflow-x:auto;scrollbar-width:none;padding-bottom:4px;">
+          <!-- 2. Music Panel -->
+          <div id="tool-music" class="tool-panel hidden anim-slide-up" style="flex:1;padding:var(--space-3) var(--space-4);display:flex;flex-direction:column;gap:12px;overflow-y:auto;">
+            <div style="display:flex;gap:12px;overflow-x:auto;scrollbar-width:none;padding-bottom:8px;padding-top:4px;">
               ${BACKGROUND_MUSIC.map((track) => `
-                <button class="music-track-btn press-effect" data-track-url="${track.url}" data-track-id="${track.id}" style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);color:var(--text-primary);cursor:pointer;padding:10px 14px;border-radius:12px;display:flex;align-items:center;gap:10px;min-width:180px;text-align:left;">
-                  <div class="music-icon-wrap" style="width:32px;height:32px;border-radius:50%;background:rgba(212,168,83,0.12);color:var(--accent-gold);display:flex;align-items:center;justify-content:center;flex-shrink:0;">${Icons.Music()}</div>
+                <button class="music-track-btn press-effect" data-track-url="${track.url}" data-track-id="${track.id}" style="background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.06);color:var(--text-primary);cursor:pointer;padding:12px;border-radius:16px;display:flex;align-items:center;gap:12px;min-width:200px;text-align:left;box-shadow:0 8px 24px rgba(0,0,0,0.2);backdrop-filter:blur(10px);">
+                  <div class="music-icon-wrap" style="width:40px;height:40px;border-radius:12px;background:linear-gradient(135deg, rgba(212,168,83,0.2), rgba(212,168,83,0.05));color:var(--accent-gold);display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:inset 0 1px 1px rgba(255,255,255,0.1);">${Icons.Music()}</div>
                   <div style="overflow:hidden;">
-                    <div style="font-size:12px;font-weight:700;color:var(--text-primary);" class="truncate">${track.name}</div>
-                    <div style="font-size:10px;color:var(--text-secondary);" class="truncate">${track.artist}</div>
+                    <div style="font-size:13px;font-weight:700;color:var(--text-primary);margin-bottom:2px;" class="truncate">${track.name}</div>
+                    <div style="font-size:11px;color:var(--text-secondary);" class="truncate">${track.artist}</div>
                   </div>
                 </button>
               `).join('')}
@@ -152,63 +152,63 @@ export function renderVideoEditor() {
           </div>
 
           <!-- 3. Filters Panel -->
-          <div id="tool-filters" class="tool-panel hidden" style="flex:1;padding:var(--space-3);overflow-x:auto;">
-            <div style="display:flex;gap:var(--space-3);min-width:max-content;padding:var(--space-2) var(--space-3);">
+          <div id="tool-filters" class="tool-panel hidden anim-slide-up" style="flex:1;padding:var(--space-3);overflow-x:auto;">
+            <div style="display:flex;gap:var(--space-4);min-width:max-content;padding:var(--space-2) var(--space-4);">
               ${FILTERS.map((f,i) => `
-                <button class="filter-btn press-effect ${i===0?'active':''}" data-filter="${f.css}" style="background:none;border:${i===0?'2px solid var(--accent-gold)':'2px solid transparent'};color:var(--text-primary);cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:6px;padding:6px;border-radius:12px;transition:all 0.2s;">
-                  <div style="width:62px;height:62px;border-radius:10px;background:linear-gradient(45deg,#1a1a2e,#16213e);filter:${f.css};box-shadow:0 4px 8px rgba(0,0,0,0.3);"></div>
-                  <span style="font-size:10px;font-weight:600;">${f.name}</span>
+                <button class="filter-btn press-effect ${i===0?'active':''}" data-filter="${f.css}" style="background:none;border:none;color:var(--text-primary);cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:8px;padding:0;transition:all 0.2s;">
+                  <div style="width:68px;height:68px;border-radius:16px;background:linear-gradient(45deg,#1a1a2e,#16213e);filter:${f.css};box-shadow:0 4px 12px rgba(0,0,0,0.4);border:${i===0?'2px solid var(--accent-gold)':'2px solid rgba(255,255,255,0.1)'};transition:all 0.2s;"></div>
+                  <span style="font-size:11px;font-weight:600;color:${i===0?'var(--accent-gold)':'var(--text-secondary)'};">${f.name}</span>
                 </button>
               `).join('')}
             </div>
           </div>
 
           <!-- 4. Adjust Panel (Interactive Sliders) -->
-          <div id="tool-adjust" class="tool-panel hidden" style="flex:1;padding:var(--space-4) var(--space-5);display:flex;flex-direction:column;gap:12px;justify-content:center;">
-            <div>
-              <div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:4px;"><span style="color:var(--text-secondary);">Brightness</span><span id="val-brightness" style="font-family:var(--font-mono);font-weight:600;">100%</span></div>
+          <div id="tool-adjust" class="tool-panel hidden anim-slide-up" style="flex:1;padding:var(--space-4) var(--space-5);display:flex;flex-direction:column;gap:16px;justify-content:center;">
+            <div class="card" style="padding:var(--space-3) var(--space-4);background:rgba(255,255,255,0.02);">
+              <div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:8px;"><span style="color:var(--text-secondary);font-weight:600;display:flex;align-items:center;gap:6px;">${Icons.Sparkles()} Brightness</span><span id="val-brightness" style="font-family:var(--font-mono);font-weight:700;color:var(--accent-blue);">100%</span></div>
               <input type="range" id="slider-brightness" min="50" max="150" value="100" style="width:100%;accent-color:var(--accent-blue);">
             </div>
-            <div>
-              <div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:4px;"><span style="color:var(--text-secondary);">Contrast</span><span id="val-contrast" style="font-family:var(--font-mono);font-weight:600;">100%</span></div>
-              <input type="range" id="slider-contrast" min="50" max="150" value="100" style="width:100%;accent-color:var(--accent-blue);">
+            <div class="card" style="padding:var(--space-3) var(--space-4);background:rgba(255,255,255,0.02);">
+              <div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:8px;"><span style="color:var(--text-secondary);font-weight:600;display:flex;align-items:center;gap:6px;">${Icons.Star()} Contrast</span><span id="val-contrast" style="font-family:var(--font-mono);font-weight:700;color:var(--accent-rose);">100%</span></div>
+              <input type="range" id="slider-contrast" min="50" max="150" value="100" style="width:100%;accent-color:var(--accent-rose);">
             </div>
-            <div>
-              <div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:4px;"><span style="color:var(--text-secondary);">Saturation</span><span id="val-saturation" style="font-family:var(--font-mono);font-weight:600;">100%</span></div>
-              <input type="range" id="slider-saturation" min="50" max="200" value="100" style="width:100%;accent-color:var(--accent-blue);">
+            <div class="card" style="padding:var(--space-3) var(--space-4);background:rgba(255,255,255,0.02);">
+              <div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:8px;"><span style="color:var(--text-secondary);font-weight:600;display:flex;align-items:center;gap:6px;">${Icons.Zap()} Saturation</span><span id="val-saturation" style="font-family:var(--font-mono);font-weight:700;color:var(--accent-gold);">100%</span></div>
+              <input type="range" id="slider-saturation" min="50" max="200" value="100" style="width:100%;accent-color:var(--accent-gold);">
             </div>
           </div>
 
           <!-- 5. Effects Panel -->
-          <div id="tool-effects" class="tool-panel hidden" style="flex:1;padding:var(--space-4);display:flex;flex-wrap:wrap;gap:10px;align-content:flex-start;justify-content:center;overflow-y:auto;">
+          <div id="tool-effects" class="tool-panel hidden anim-slide-up" style="flex:1;padding:var(--space-4);display:flex;flex-wrap:wrap;gap:12px;align-content:flex-start;justify-content:center;overflow-y:auto;">
             ${['Glitch-FX','Cinematic Shake','Zoom Focus','White Flash','Slow-Motion','Speed Up'].map(e => `
-              <button class="effect-btn btn btn-secondary" data-effect="${e.toLowerCase().replace(' ','-')}" style="font-size:12px;border-radius:12px;padding:8px 16px;">${e}</button>
+              <button class="effect-btn btn" data-effect="${e.toLowerCase().replace(' ','-')}" style="background:linear-gradient(135deg, rgba(255,255,255,0.05), transparent);border:1px solid rgba(255,255,255,0.1);font-size:12px;font-weight:600;border-radius:12px;padding:12px 18px;color:var(--text-primary);box-shadow:0 4px 12px rgba(0,0,0,0.2);backdrop-filter:blur(8px);">${e}</button>
             `).join('')}
           </div>
 
           <!-- 6. Text Panel -->
-          <div id="tool-text" class="tool-panel hidden" style="flex:1;padding:var(--space-4);display:flex;flex-direction:column;gap:12px;justify-content:center;">
-            <input type="text" id="text-input" class="input" placeholder="Enter series overlay text..." style="font-size:var(--text-sm);border-radius:10px;background:rgba(255,255,255,0.06);">
+          <div id="tool-text" class="tool-panel hidden anim-slide-up" style="flex:1;padding:var(--space-4);display:flex;flex-direction:column;gap:16px;justify-content:center;">
+            <input type="text" id="text-input" class="input" placeholder="Enter series overlay text..." style="font-size:var(--text-sm);border-radius:12px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);backdrop-filter:blur(8px);padding:12px 16px;box-shadow:inset 0 2px 4px rgba(0,0,0,0.2);">
             <div style="display:flex;gap:var(--space-2);align-items:center;">
-              <button class="btn btn-secondary btn-sm text-style-btn active" data-style="bold" style="font-weight:800;width:36px;height:36px;border-radius:10px;padding:0;">B</button>
-              <button class="btn btn-secondary btn-sm text-style-btn" data-style="italic" style="font-style:italic;width:36px;height:36px;border-radius:10px;padding:0;">I</button>
-              <button class="btn btn-secondary btn-sm text-style-btn" data-style="outline" style="font-size:10px;height:36px;border-radius:10px;">Outline</button>
+              <button class="btn btn-secondary btn-sm text-style-btn active" data-style="bold" style="font-weight:800;width:38px;height:38px;border-radius:12px;padding:0;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);">B</button>
+              <button class="btn btn-secondary btn-sm text-style-btn" data-style="italic" style="font-style:italic;width:38px;height:38px;border-radius:12px;padding:0;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.05);">I</button>
+              <button class="btn btn-secondary btn-sm text-style-btn" data-style="outline" style="font-size:11px;font-weight:600;height:38px;border-radius:12px;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.05);">Outline</button>
               <div style="flex:1;"></div>
-              <div style="display:flex;gap:6px;">
-                ${['#fff','#F85149','#D4A853','#58A6FF','#3FB950'].map(c => `<button class="btn text-color-btn" data-color="${c}" style="background:${c};width:26px;height:26px;border-radius:50%;border:2px solid transparent;padding:0;min-height:0;box-shadow:0 2px 6px rgba(0,0,0,0.4);"></button>`).join('')}
+              <div style="display:flex;gap:8px;">
+                ${['#fff','#F85149','#D4A853','#58A6FF','#3FB950'].map(c => `<button class="btn text-color-btn press-effect" data-color="${c}" style="background:${c};width:28px;height:28px;border-radius:50%;border:2px solid rgba(255,255,255,0.2);padding:0;min-height:0;box-shadow:0 4px 10px rgba(0,0,0,0.4);"></button>`).join('')}
               </div>
             </div>
           </div>
 
           <!-- 7. Stickers Panel -->
-          <div id="tool-stickers" class="tool-panel hidden" style="flex:1;padding:var(--space-3) var(--space-4);overflow-y:auto;">
-            <div style="display:grid;grid-template-columns:repeat(6,1fr);gap:10px;justify-items:center;">
+          <div id="tool-stickers" class="tool-panel hidden anim-slide-up" style="flex:1;padding:var(--space-4);overflow-y:auto;">
+            <div style="display:grid;grid-template-columns:repeat(6,1fr);gap:12px;justify-items:center;">
               ${STICKERS.map(sticker => `
-                <button class="sticker-btn press-effect" data-sticker="${sticker}" style="background:none;border:none;font-size:32px;cursor:pointer;padding:4px;transition:transform 0.2s;">${sticker}</button>
+                <button class="sticker-btn press-effect" data-sticker="${sticker}" style="background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.05);border-radius:16px;font-size:32px;cursor:pointer;padding:8px;transition:all 0.2s;box-shadow:0 4px 10px rgba(0,0,0,0.1);backdrop-filter:blur(8px);">${sticker}</button>
               `).join('')}
             </div>
-            <div style="display:flex;justify-content:center;margin-top:10px;">
-              <button class="btn btn-secondary btn-sm" id="btn-clear-stickers" style="font-size:10px;border-radius:8px;padding:4px 10px;">Clear Stickers</button>
+            <div style="display:flex;justify-content:center;margin-top:16px;">
+              <button class="btn btn-ghost btn-sm" id="btn-clear-stickers" style="font-size:11px;font-weight:600;border-radius:12px;padding:6px 14px;background:rgba(248,81,73,0.1);color:var(--accent-rose);border:1px solid rgba(248,81,73,0.2);">Clear Stickers</button>
             </div>
           </div>
         </div>

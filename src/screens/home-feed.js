@@ -2,6 +2,8 @@
 // VUNASHORTS — Home Feed Screen
 // ============================================
 import { appStore } from '../services/store.js';
+import { USER_PROFILE } from '../data/mock-data.js';
+import { i18n } from '../services/i18n.js';
 import { showToast } from '../components/utils.js';
 import { Icons } from '../components/icons.js';
 import logoUrl from '../assets/app-icon-transparent.png';
@@ -30,9 +32,9 @@ export function renderHomeFeed() {
         </div>
       </div>
       <div id="feed-tabs" style="position:absolute;top:calc(var(--safe-top) + 56px);left:0;right:0;z-index:10;display:flex;justify-content:center;gap:var(--space-6);">
-        <button class="feed-tab active" data-tab="foryou">For You</button>
-        <button class="feed-tab" data-tab="trending">Trending</button>
-        <button class="feed-tab" data-tab="following">Following</button>
+        <button class="feed-tab active" data-tab="foryou">${i18n.t('forYou')}</button>
+        <button class="feed-tab" data-tab="trending">${i18n.t('trending')}</button>
+        <button class="feed-tab" data-tab="following">${i18n.t('following')}</button>
       </div>
     </div>
     <style>
@@ -58,12 +60,64 @@ export function renderHomeFeed() {
       .creator-follow-btn:hover{background:var(--text-primary);color:var(--text-inverse);}
       .lock-overlay-mini{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);display:flex;flex-direction:column;align-items:center;gap:var(--space-3);}
       .lock-icon-pulse{width:64px;height:64px;border-radius:50%;background:rgba(255,255,255,0.15);backdrop-filter:blur(12px);display:flex;align-items:center;justify-content:center;font-size:28px;animation:breathe 2s ease-in-out infinite;border:1px solid rgba(255,255,255,0.1);}
+      
+      #feed-cards.swiping .feed-card { transition: none !important; }
+      
+      @keyframes floatUp {
+        0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; }
+        15% { transform: translate(calc(-50% + var(--tx, 0px)), calc(-50% - 40px)) scale(1.2); opacity: 1; }
+        100% { transform: translate(calc(-50% + var(--tx, 0px) * 2), calc(-50% - 150px)) scale(1); opacity: 0; }
+      }
+      .floating-particle {
+        position: absolute;
+        font-size: 50px;
+        pointer-events: none;
+        z-index: 100;
+        animation: floatUp 1.2s ease-out forwards;
+        filter: drop-shadow(0 4px 12px rgba(0,0,0,0.4));
+      }
+      @keyframes popIn {
+        0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; }
+        50% { transform: translate(-50%, -50%) scale(1.1); opacity: 1; }
+        100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+      }
+      @keyframes fadeOutPlay {
+        0% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+        100% { opacity: 0; transform: translate(-50%, -50%) scale(1.2); }
+      }
+      .play-overlay {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 80px;
+        height: 80px;
+        background: rgba(0,0,0,0.4);
+        backdrop-filter: blur(12px);
+        border: 1px solid rgba(255,255,255,0.2);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 36px;
+        z-index: 50;
+        pointer-events: none;
+        animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+      }
+      .play-overlay.fade-out {
+        animation: fadeOutPlay 0.3s ease-out forwards;
+      }
     </style>
   `;
 }
 
 function renderFeedCard(series, index) {
-  const isLocked = index >= 3; // First 3 free
+  const userTier = USER_PROFILE.tier || 'free';
+  const reqTier = series.requiredTier || 'free';
+  const tierOrder = { free: 0, pro: 1, premium: 2 };
+  const isLocked = tierOrder[userTier] < tierOrder[reqTier];
+  const t = i18n.t.bind(i18n);
   const bgStyle = series.poster
     ? `background-image:url('${series.poster}')`
     : `background:${series.gradientPoster || 'linear-gradient(135deg,#1a1a2e,#16213e)'}`;
@@ -98,8 +152,8 @@ function renderFeedCard(series, index) {
       ${isLocked ? `
         <div class="lock-overlay-mini" style="z-index:3;">
           <div class="lock-icon-pulse" style="color:white;">${Icons.Lock()}</div>
-          <button class="btn btn-gold btn-sm" onclick="document.dispatchEvent(new CustomEvent('navigate',{detail:'episode-lock'}))">
-            Unlock — ${series.currency} ${series.pricePerEpisode}
+          <button class="btn ${reqTier === 'premium' ? 'btn-gold' : 'btn-primary'} btn-sm" onclick="document.dispatchEvent(new CustomEvent('navigate',{detail:'episode-lock'}))">
+            ${Icons.Crown()} ${t('upgradeRequired', { tier: reqTier === 'premium' ? 'Premium' : 'Pro' })}
           </button>
         </div>
       ` : ''}
@@ -118,11 +172,11 @@ function renderFeedCard(series, index) {
         </div>
         <div class="feed-action" data-action="download">
           <div class="feed-action-icon" style="color:white;">${Icons.Download()}</div>
-          <span class="feed-action-label">Save</span>
+          <span class="feed-action-label">${t('save')}</span>
         </div>
         <div class="feed-action" data-action="tip">
           <div class="feed-action-icon" style="background:var(--accent-gold-dim);color:var(--accent-gold);">${Icons.Gift()}</div>
-          <span class="feed-action-label">Tip</span>
+          <span class="feed-action-label">${t('tip')}</span>
         </div>
       </div>
       <div style="position:absolute;bottom:20px;left:16px;right:80px;z-index:5;">
@@ -130,15 +184,15 @@ function renderFeedCard(series, index) {
           <div class="avatar avatar-sm" style="font-size:14px;">${series.creator.avatar}</div>
           <span style="font-weight:600;font-size:var(--text-sm);">${series.creator.name}</span>
           ${series.creator.verified ? `<span style="display:inline-flex;color:var(--accent-blue);width:12px;height:12px;">${Icons.CheckCircle()}</span>` : ''}
-          <button class="creator-follow-btn">Follow</button>
+          <button class="creator-follow-btn">${t('follow')}</button>
         </div>
         <h3 style="font-size:var(--text-lg);font-weight:800;margin-bottom:2px;">${series.title}</h3>
         <p style="font-size:var(--text-xs);color:var(--text-secondary);margin-bottom:var(--space-2);line-height:1.4;" class="line-clamp-2">${series.description}</p>
         <div style="display:flex;gap:var(--space-2);flex-wrap:wrap;align-items:center;">
-          <span class="episode-badge">${series.country} Ep ${ep}/${series.episodes}</span>
+          <span class="episode-badge">${series.country} ${t('episode')} ${ep}/${series.episodes}</span>
           <span class="episode-badge"><span style="color:var(--accent-gold);">${Icons.Star()}</span> ${series.rating}</span>
           <span class="episode-badge"><span style="color:var(--text-secondary);">${Icons.Eye()}</span> ${views}</span>
-          ${series.tags.includes('trending') ? `<span class="episode-badge ai-badge"><span style="color:var(--accent-rose);">${Icons.Fire()}</span> Trending</span>` : ''}
+          ${series.tags.includes('trending') ? `<span class="episode-badge ai-badge"><span style="color:var(--accent-rose);">${Icons.Fire()}</span> ${t('trending')}</span>` : ''}
         </div>
       </div>
       <div class="feed-progress" style="z-index:6;">
@@ -180,6 +234,7 @@ export function mountHomeFeed(el) {
   }
 
   unsubscribe = appStore.subscribe('series', renderCards);
+  i18n.onLangChange(() => renderCards()); // re-render on language change
   renderCards();
 
   // Mute button handler
@@ -200,25 +255,125 @@ export function mountHomeFeed(el) {
     });
   }
 
-  // Touch/swipe handling
+  // Touch/swipe/tap handling (TikTok Physics Engine)
   let touchStartY = 0;
   let isSwiping = false;
+  let lastTapTime = 0;
+  let tapTimeout = null;
+  let touchStartTime = 0;
 
   feedCards.addEventListener('touchstart', e => {
     touchStartY = e.touches[0].clientY;
+    touchStartTime = Date.now();
     isSwiping = true;
+    feedCards.classList.add('swiping');
+  }, { passive: true });
+
+  feedCards.addEventListener('touchmove', e => {
+    if (!isSwiping) return;
+    const dy = e.touches[0].clientY - touchStartY;
+    
+    // Apply 1:1 physics tracking
+    const active = feedCards.querySelector('.feed-card.active');
+    if (active) {
+       active.style.transform = `translateY(${dy}px)`;
+    }
   }, { passive: true });
 
   feedCards.addEventListener('touchend', e => {
     if (!isSwiping) return;
     isSwiping = false;
-    const dy = touchStartY - e.changedTouches[0].clientY;
-    if (Math.abs(dy) > 60) {
-      const length = appStore.getSeries().length;
-      if (dy > 0 && currentIndex < length - 1) goToCard(currentIndex + 1, feedCards);
-      else if (dy < 0 && currentIndex > 0) goToCard(currentIndex - 1, feedCards);
+    feedCards.classList.remove('swiping');
+    
+    // Reset any inline transforms so CSS classes take over smoothly
+    feedCards.querySelectorAll('.feed-card').forEach(c => c.style.transform = '');
+
+    const dy = touchStartY - e.changedTouches[0].clientY; // Distance swiped UP
+    const touchDuration = Date.now() - touchStartTime;
+
+    // Detect Tap vs Swipe
+    if (Math.abs(dy) < 10 && touchDuration < 300) {
+      // It's a tap!
+      const now = Date.now();
+      if (now - lastTapTime < 300) {
+        // Double Tap!
+        clearTimeout(tapTimeout);
+        lastTapTime = 0;
+        triggerDoubleTapLike(e.changedTouches[0].clientX, e.changedTouches[0].clientY);
+      } else {
+        lastTapTime = now;
+        tapTimeout = setTimeout(() => {
+          triggerSingleTapPlayPause();
+        }, 300);
+      }
+      return;
+    }
+
+    // Velocity-based momentum snapping
+    const velocity = Math.abs(dy) / touchDuration;
+    const length = appStore.getSeries().length;
+    
+    if ((Math.abs(dy) > 100 || velocity > 0.5)) {
+      if (dy > 0 && currentIndex < length - 1) {
+        if (navigator.vibrate) navigator.vibrate([15]); // Haptic snap
+        goToCard(currentIndex + 1, feedCards);
+      } else if (dy < 0 && currentIndex > 0) {
+        if (navigator.vibrate) navigator.vibrate([15]); // Haptic snap
+        goToCard(currentIndex - 1, feedCards);
+      }
     }
   }, { passive: true });
+
+  function triggerDoubleTapLike(x, y) {
+    if (navigator.vibrate) navigator.vibrate([15, 50, 15]); // Heartbeat haptic feedback
+    
+    // Spawn 3D floating particle
+    const particle = document.createElement('div');
+    particle.className = 'floating-particle';
+    particle.textContent = '❤️';
+    particle.style.left = `${x}px`;
+    particle.style.top = `${y}px`;
+    particle.style.setProperty('--tx', `${(Math.random() - 0.5) * 60}px`); // Randomize drift
+    document.body.appendChild(particle);
+    
+    // Animate the actual like button
+    const activeCard = feedCards.querySelector('.feed-card.active');
+    if (activeCard) {
+      const likeIcon = activeCard.querySelector('.feed-action[data-action="like"] .feed-action-icon');
+      if (likeIcon) {
+        likeIcon.style.animation = 'none'; // reset
+        void likeIcon.offsetWidth; // trigger reflow
+        likeIcon.style.animation = 'heartbeat 600ms ease forwards';
+        likeIcon.style.background = 'rgba(248,81,73,0.2)';
+      }
+    }
+
+    setTimeout(() => {
+      particle.remove();
+    }, 1200);
+  }
+
+  function triggerSingleTapPlayPause() {
+    const activeCard = feedCards.querySelector('.feed-card.active');
+    if (!activeCard) return;
+    const video = activeCard.querySelector('.feed-card-video');
+    if (!video) return;
+
+    if (video.paused) {
+      video.play();
+      const existingOverlay = activeCard.querySelector('.play-overlay');
+      if (existingOverlay) {
+        existingOverlay.classList.add('fade-out');
+        setTimeout(() => existingOverlay.remove(), 300);
+      }
+    } else {
+      video.pause();
+      const overlay = document.createElement('div');
+      overlay.className = 'play-overlay';
+      overlay.innerHTML = Icons.Play();
+      activeCard.appendChild(overlay);
+    }
+  }
 
   // Scroll wheel for desktop (debounce slightly so it doesn't trigger rapidly)
   let lastWheelTime = 0;
@@ -352,10 +507,10 @@ function playActiveVideo(container) {
     const video = card.querySelector('.feed-card-video');
     if (!video) return;
     
-    if (i === currentIndex) {
-      const src = video.dataset.src;
-      
-      // Attach HLS if needed
+    const src = video.dataset.src;
+    
+    // Preload immediate adjacent videos
+    if (i >= currentIndex - 1 && i <= currentIndex + 1) {
       if (src && src.endsWith('.m3u8')) {
         if (Hls.isSupported()) {
           if (!hlsInstances.has(i)) {
@@ -364,17 +519,36 @@ function playActiveVideo(container) {
             hls.attachMedia(video);
             hlsInstances.set(i, hls);
           }
-          hlsInstances.get(i).startLoad();
+          // Aggressively load active
+          if (i === currentIndex) hlsInstances.get(i).startLoad();
         } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
           if (!video.src) video.src = src;
         }
       } else {
         if (!video.src) video.src = src;
+        if (i !== currentIndex) video.preload = "auto";
       }
+    } else {
+      // Out of view, clean up resources to save memory
+      if (hlsInstances.has(i)) hlsInstances.get(i).stopLoad();
+    }
 
+    if (i === currentIndex) {
       video.muted = window.feedMuted;
       video.currentTime = 0;
       video.style.opacity = '1';
+      
+      // Cinematic audio fade-in
+      if (!window.feedMuted) {
+        video.volume = 0;
+        const fadeInt = setInterval(() => {
+          if (video.volume < 0.9) video.volume += 0.1;
+          else { video.volume = 1; clearInterval(fadeInt); }
+        }, 30);
+      } else {
+        video.volume = 1;
+      }
+      
       const playPromise = video.play();
       if (playPromise !== undefined) {
         playPromise.catch(error => {
@@ -386,9 +560,6 @@ function playActiveVideo(container) {
     } else {
       video.pause();
       video.style.opacity = '0';
-      if (hlsInstances.has(i)) {
-        hlsInstances.get(i).stopLoad();
-      }
     }
   });
 }
