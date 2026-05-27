@@ -6,7 +6,7 @@ import { USER_PROFILE } from '../data/mock-data.js';
 import { i18n } from '../services/i18n.js';
 import { showToast } from '../components/utils.js';
 import { Icons } from '../components/icons.js';
-import logoUrl from '../assets/app-icon-transparent.png';
+import logoUrl from '../assets/app-logo.png';
 import Hls from 'hls.js';
 
 let currentIndex = 0;

@@ -1,7 +1,7 @@
 import { authService } from '../services/auth.js';
 import { Icons } from '../components/icons.js';
 import { showToast } from '../components/utils.js';
-import logoUrl from '../assets/app-icon-transparent.png';
+import logoUrl from '../assets/app-logo.png';
 
 const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID || '';
 

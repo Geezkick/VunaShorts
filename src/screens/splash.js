@@ -3,7 +3,7 @@
 // ============================================
 import { LANGUAGES } from '../data/mock-data.js';
 import { Icons } from '../components/icons.js';
-import logoUrl from '../assets/app-icon-transparent.png';
+import logoUrl from '../assets/app-logo.png';
 import { i18n } from '../services/i18n.js';
 
 export function renderSplash() {
