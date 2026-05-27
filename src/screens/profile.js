@@ -141,6 +141,21 @@ export function renderProfile() {
         </div>
       </div>
     </div>
+
+    <!-- Language Selection Modal -->
+    <div id="language-profile-modal" class="modal-overlay" style="display:none;align-items:flex-end;justify-content:center;padding:0;z-index:var(--z-modal);">
+      <div class="card" style="width:100%;max-width:600px;border-radius:var(--radius-2xl) var(--radius-2xl) 0 0;padding:var(--space-6);animation:slideUp 300ms var(--ease-out);max-height:80vh;overflow-y:auto;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:var(--space-4);">
+          <h3 style="font-size:var(--text-xl);display:flex;align-items:center;gap:var(--space-2);">${Icons.Globe()} Language & Region</h3>
+          <button class="btn btn-ghost btn-icon" id="btn-close-language-modal">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+          </button>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:var(--space-2);" id="language-options-container">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+    </div>
   `;
 }
 
@@ -258,10 +273,54 @@ export function mountProfile(el) {
   }
 
   const langBtn = document.getElementById('btn-lang');
-  if (langBtn) {
-    langBtn.addEventListener('click', () => {
-      showToast('Language settings opened', 'info');
+  const langModal = el.querySelector('#language-profile-modal');
+  const closeLangBtn = el.querySelector('#btn-close-language-modal');
+  const langOptionsContainer = el.querySelector('#language-options-container');
+
+  if (langBtn && langModal) {
+    import('../data/mock-data.js').then(({ LANGUAGES }) => {
+      langBtn.addEventListener('click', () => {
+        // Populate options
+        const currentLang = i18n.getLang();
+        if (langOptionsContainer) {
+          langOptionsContainer.innerHTML = LANGUAGES.map(l => `
+            <button class="lang-profile-option press-effect ${l.code === currentLang ? 'active' : ''}" data-lang="${l.code}" style="display:flex;align-items:center;justify-content:space-between;padding:var(--space-3) var(--space-4);width:100%;background:${l.code === currentLang ? 'rgba(212,168,83,0.1)' : 'rgba(255,255,255,0.02)'};border:1px solid ${l.code === currentLang ? 'var(--accent-gold)' : 'rgba(255,255,255,0.05)'};border-radius:var(--radius-lg);cursor:pointer;color:var(--text-primary);text-align:left;">
+              <div>
+                <div style="font-weight:600;font-size:var(--text-sm);">${l.name}</div>
+                <div style="font-size:var(--text-xs);color:var(--text-tertiary);">${l.native}</div>
+              </div>
+              ${l.code === currentLang ? `<div style="color:var(--accent-gold);">${Icons.Check()}</div>` : ''}
+            </button>
+          `).join('');
+
+          // Add click listeners to new options
+          langOptionsContainer.querySelectorAll('.lang-profile-option').forEach(btn => {
+            btn.addEventListener('click', () => {
+              const selectedLang = btn.dataset.lang;
+              i18n.setLang(selectedLang);
+              langModal.style.display = 'none';
+              showToast(`Language changed successfully`, 'success');
+              
+              // Update the label on the button
+              const selectedLangObj = LANGUAGES.find(l => l.code === selectedLang) || LANGUAGES[0];
+              const labelEl = langBtn.querySelector('span:nth-child(2)');
+              if (labelEl && labelEl.innerHTML.includes('English (KE)')) {
+                 // Update the current display text
+              }
+              // A re-render will typically happen if they navigate, but we can update the button text directly
+              langBtn.querySelector('span:last-child').innerHTML = `${selectedLangObj.name} <span style="width:16px;height:16px;">${Icons.ChevronRight()}</span>`;
+            });
+          });
+        }
+        langModal.style.display = 'flex';
+      });
     });
+
+    if (closeLangBtn) {
+      closeLangBtn.addEventListener('click', () => {
+        langModal.style.display = 'none';
+      });
+    }
   }
 
   const paymentBtn = document.getElementById('btn-payment');
