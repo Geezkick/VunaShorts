@@ -45,11 +45,11 @@ export function renderHomeFeed() {
       .feed-tab{background:none;border:none;color:var(--text-muted);font-family:var(--font-display);font-size:var(--text-sm);font-weight:600;cursor:pointer;padding:var(--space-1) var(--space-2);position:relative;transition:color var(--duration-normal) var(--ease-out);}
       .feed-tab.active{color:var(--text-primary);}
       .feed-tab.active::after{content:'';position:absolute;bottom:-4px;left:50%;transform:translateX(-50%);width:20px;height:2px;background:var(--text-primary);border-radius:var(--radius-full);}
-      .feed-action{display:flex;flex-direction:column;align-items:center;gap:2px;cursor:pointer;transition:transform var(--duration-fast) var(--ease-out);}
-      .feed-action:active{transform:scale(0.9);}
-      .feed-action-icon{width:44px;height:44px;border-radius:50%;background:rgba(255,255,255,0.1);backdrop-filter:blur(10px);display:flex;align-items:center;justify-content:center;font-size:20px;transition:all var(--duration-normal) var(--ease-out);}
-      .feed-action-icon:hover{background:rgba(255,255,255,0.2);}
-      .feed-action-label{font-size:10px;color:var(--text-secondary);font-weight:500;font-family:var(--font-mono);}
+      .feed-action{display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;transition:transform var(--duration-fast) var(--ease-out);}
+      .feed-action:active{transform:scale(0.85);}
+      .feed-action-icon{width:46px;height:46px;border-radius:50%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.15);backdrop-filter:blur(16px);display:flex;align-items:center;justify-content:center;font-size:22px;transition:all var(--duration-normal) var(--ease-out);box-shadow:0 8px 16px rgba(0,0,0,0.3);}
+      .feed-action-icon:hover{background:rgba(255,255,255,0.15);box-shadow:0 8px 24px rgba(255,255,255,0.1);}
+      .feed-action-label{font-size:11px;color:rgba(255,255,255,0.9);font-weight:700;font-family:var(--font-display);text-shadow:0 2px 4px rgba(0,0,0,0.6);}
       .feed-progress{position:absolute;bottom:0;left:0;right:0;height:3px;background:rgba(255,255,255,0.1);}
       .feed-progress-fill{height:100%;background:var(--text-primary);border-radius:0 var(--radius-full) var(--radius-full) 0;transition:width 100ms linear;}
       .feed-card-poster{position:absolute;inset:0;background-size:cover;background-position:center;}
@@ -157,37 +157,55 @@ function renderFeedCard(series, index) {
           </button>
         </div>
       ` : ''}
-      <div style="position:absolute;right:12px;bottom:120px;z-index:5;display:flex;flex-direction:column;gap:var(--space-5);align-items:center;">
-        <div class="feed-action" data-action="like">
+      <div style="position:absolute;right:12px;bottom:140px;z-index:5;display:flex;flex-direction:column;gap:18px;align-items:center;">
+        <div class="feed-action press-effect" data-action="like">
           <div class="feed-action-icon" style="color:white;">${Icons.Heart()}</div>
           <span class="feed-action-label">${formatViews(Math.floor(Math.random() * 50000 + 10000))}</span>
         </div>
-        <div class="feed-action" data-action="comment">
+        <div class="feed-action press-effect" data-action="comment">
           <div class="feed-action-icon" style="color:white;">${Icons.MessageCircle()}</div>
           <span class="feed-action-label">${formatViews(Math.floor(Math.random() * 5000 + 500))}</span>
         </div>
-        <div class="feed-action" data-action="cc">
+        <div class="feed-action press-effect" data-action="share">
+          <div class="feed-action-icon" style="color:white;">${Icons.Share()}</div>
+          <span class="feed-action-label">${t('share') || 'Share'}</span>
+        </div>
+        <div class="feed-action press-effect" data-action="cc">
           <div class="feed-action-icon" style="color:white;">${Icons.MoreHorizontal()}</div>
           <span class="feed-action-label">CC</span>
         </div>
-        <div class="feed-action" data-action="download">
+        <div class="feed-action press-effect" data-action="download">
           <div class="feed-action-icon" style="color:white;">${Icons.Download()}</div>
           <span class="feed-action-label">${t('save')}</span>
         </div>
-        <div class="feed-action" data-action="tip">
-          <div class="feed-action-icon" style="background:var(--accent-gold-dim);color:var(--accent-gold);">${Icons.Gift()}</div>
-          <span class="feed-action-label">${t('tip')}</span>
+        <div class="feed-action press-effect" data-action="tip">
+          <div class="feed-action-icon" style="background:linear-gradient(135deg, rgba(212,168,83,0.3), rgba(212,168,83,0.1));border:1px solid rgba(212,168,83,0.4);color:var(--accent-gold);box-shadow:0 0 16px rgba(212,168,83,0.3);">${Icons.Gift()}</div>
+          <span class="feed-action-label" style="color:var(--accent-gold);">${t('tip')}</span>
         </div>
       </div>
       <div style="position:absolute;bottom:20px;left:16px;right:80px;z-index:5;">
         <div style="display:flex;align-items:center;gap:var(--space-2);margin-bottom:var(--space-2);">
-          <div class="avatar avatar-sm" style="font-size:14px;">${series.creator.avatar}</div>
-          <span style="font-weight:600;font-size:var(--text-sm);">${series.creator.name}</span>
-          ${series.creator.verified ? `<span style="display:inline-flex;color:var(--accent-blue);width:12px;height:12px;">${Icons.CheckCircle()}</span>` : ''}
-          <button class="creator-follow-btn">${t('follow')}</button>
+          <div class="avatar avatar-sm" style="font-size:14px;box-shadow:0 0 10px rgba(0,0,0,0.5);">${series.creator.avatar}</div>
+          <span style="font-weight:700;font-size:var(--text-sm);text-shadow:0 2px 4px rgba(0,0,0,0.8);">${series.creator.name}</span>
+          ${series.creator.verified ? `<span style="display:inline-flex;color:var(--accent-blue);width:14px;height:14px;filter:drop-shadow(0 0 4px rgba(88,166,255,0.6));">${Icons.CheckCircle()}</span>` : ''}
+          <button class="creator-follow-btn press-effect" onclick="
+            if(this.dataset.following === 'true') {
+              this.dataset.following = 'false';
+              this.textContent = 'Follow';
+              this.style.background = 'rgba(255,255,255,0.15)';
+              this.style.color = 'white';
+            } else {
+              this.dataset.following = 'true';
+              this.textContent = 'Following';
+              this.style.background = 'linear-gradient(135deg, var(--accent-gold), var(--accent-rose))';
+              this.style.color = 'white';
+              this.style.border = 'none';
+              import('../components/utils.js').then(m => m.showToast('You are now following ${series.creator.name}', 'success'));
+            }
+          ">${t('follow')}</button>
         </div>
-        <h3 style="font-size:var(--text-lg);font-weight:800;margin-bottom:2px;">${series.title}</h3>
-        <p style="font-size:var(--text-xs);color:var(--text-secondary);margin-bottom:var(--space-2);line-height:1.4;" class="line-clamp-2">${series.description}</p>
+        <h3 style="font-size:var(--text-lg);font-weight:800;margin-bottom:4px;text-shadow:0 2px 8px rgba(0,0,0,0.8);letter-spacing:0.02em;">${series.title}</h3>
+        <p style="font-size:var(--text-xs);color:rgba(255,255,255,0.9);margin-bottom:var(--space-3);line-height:1.5;text-shadow:0 1px 4px rgba(0,0,0,0.8);" class="line-clamp-2">${series.description}</p>
         <div style="display:flex;gap:var(--space-2);flex-wrap:wrap;align-items:center;">
           <span class="episode-badge">${series.country} ${t('episode')} ${ep}/${series.episodes}</span>
           <span class="episode-badge"><span style="color:var(--accent-gold);">${Icons.Star()}</span> ${series.rating}</span>
@@ -423,9 +441,25 @@ export function mountHomeFeed(el) {
       const icon = btn.querySelector('.feed-action-icon');
       if (action === 'like') {
         icon.style.animation = 'heartbeat 600ms ease forwards';
-        icon.style.background = 'rgba(248,81,73,0.2)';
+        icon.style.background = 'linear-gradient(135deg, rgba(248,81,73,0.4), rgba(248,81,73,0.1))';
+        icon.style.borderColor = 'rgba(248,81,73,0.5)';
+        icon.style.color = 'var(--accent-rose)';
+        const label = btn.querySelector('.feed-action-label');
+        if(label && !label.dataset.liked) {
+           let count = parseInt(label.textContent.replace('K','00')) || 10000;
+           label.textContent = formatViews(count + 1);
+           label.dataset.liked = 'true';
+           label.style.color = 'var(--accent-rose)';
+        }
+      } else if (action === 'comment') {
+        showToast('Loading comments...', 'info');
+        setTimeout(() => {
+          document.dispatchEvent(new CustomEvent('navigate', { detail: 'inbox' })); // Fallback to inbox as a "messages/comments" view for now
+        }, 600);
       } else if (action === 'download') {
-        icon.style.background = 'rgba(88,166,255,0.2)';
+        icon.style.background = 'linear-gradient(135deg, rgba(88,166,255,0.4), rgba(88,166,255,0.1))';
+        icon.style.borderColor = 'rgba(88,166,255,0.5)';
+        icon.style.color = 'var(--accent-blue)';
         showToast('Downloading episode for offline viewing...', 'info');
         
         // PWA Offline Cache logic
@@ -452,20 +486,36 @@ export function mountHomeFeed(el) {
           const track = video.textTracks[0];
           if (track.mode === 'showing') {
             track.mode = 'hidden';
-            icon.style.background = 'rgba(255,255,255,0.1)';
+            icon.style.background = 'rgba(255,255,255,0.05)';
+            icon.style.borderColor = 'rgba(255,255,255,0.15)';
+            icon.style.color = 'white';
             showToast('AI Translation Off', 'info');
           } else {
             track.mode = 'showing';
-            icon.style.background = 'var(--accent-gold-dim)';
+            icon.style.background = 'linear-gradient(135deg, rgba(63,185,80,0.4), rgba(63,185,80,0.1))';
+            icon.style.borderColor = 'rgba(63,185,80,0.5)';
+            icon.style.color = 'var(--accent-emerald)';
             showToast('AI Translation On', 'success');
           }
         } else {
           showToast('No subtitles available for this episode', 'info');
         }
       } else if (action === 'tip') {
-        document.dispatchEvent(new CustomEvent('navigate', { detail: 'episode-lock' }));
+        icon.style.animation = 'spin 1s linear';
+        setTimeout(() => icon.style.animation = '', 1000);
+        showToast('Sending 50 VunaCoins...', 'info');
+        setTimeout(() => showToast('Creator Tipped! 🎉', 'success'), 800);
       } else if (action === 'share') {
-        showToast('Share link copied!', 'success');
+        icon.style.background = 'linear-gradient(135deg, rgba(255,255,255,0.3), rgba(255,255,255,0.1))';
+        if (navigator.share) {
+          navigator.share({
+            title: 'VunaShorts Episode',
+            text: 'Check out this amazing series on VunaShorts!',
+            url: window.location.href,
+          }).catch(console.error);
+        } else {
+          showToast('Share link copied to clipboard!', 'success');
+        }
       }
     });
   });

@@ -53,19 +53,20 @@ export function renderVideoEditor() {
       <div id="editor-step-1" style="flex:1;overflow-y:auto;padding:var(--space-3);background:var(--bg-primary);">
         <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px;">
           <!-- Custom Upload Card -->
-          <div id="btn-trigger-upload" class="media-thumb press-effect animate-pulse" style="aspect-ratio:9/16;position:relative;cursor:pointer;overflow:hidden;border:2px dashed rgba(212,168,83,0.3);border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;background:rgba(212,168,83,0.04);transition:all 0.3s;">
-            <div style="width:44px;height:44px;border-radius:50%;background:rgba(212,168,83,0.15);display:flex;align-items:center;justify-content:center;color:var(--accent-gold);">${Icons.Plus()}</div>
-            <div style="font-size:11px;font-weight:700;color:var(--accent-gold);text-transform:uppercase;letter-spacing:0.05em;">Upload Video</div>
+          <div id="btn-trigger-upload" class="media-thumb press-effect" style="aspect-ratio:9/16;position:relative;cursor:pointer;overflow:hidden;border:2px dashed rgba(212,168,83,0.4);border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;background:linear-gradient(135deg, rgba(212,168,83,0.05), transparent);transition:all 0.3s;box-shadow:inset 0 0 20px rgba(212,168,83,0.05);">
+            <div style="width:48px;height:48px;border-radius:50%;background:linear-gradient(135deg, var(--accent-gold), var(--accent-rose));display:flex;align-items:center;justify-content:center;color:#fff;box-shadow:0 8px 16px rgba(212,168,83,0.3); animation:pulse 2s infinite;">${Icons.Plus()}</div>
+            <div style="font-size:12px;font-weight:800;color:var(--text-primary);text-transform:uppercase;letter-spacing:0.05em;text-shadow:0 2px 4px rgba(0,0,0,0.5);">Upload Video</div>
+            <div style="font-size:10px;color:var(--accent-gold);opacity:0.8;">Up to 4K / 60fps</div>
             <input type="file" id="real-file-input" accept="video/*" style="display:none;">
           </div>
 
           <!-- Video Gallery Templates -->
           ${MOCK_VIDEOS.map((v, i) => `
-            <div class="media-thumb press-effect gallery-video-thumb" data-video-url="${v}" data-idx="${i}" style="aspect-ratio:9/16;position:relative;cursor:pointer;overflow:hidden;border-radius:12px;box-shadow:0 4px 10px rgba(0,0,0,0.2);">
+            <div class="media-thumb press-effect gallery-video-thumb" data-video-url="${v}" data-idx="${i}" style="aspect-ratio:9/16;position:relative;cursor:pointer;overflow:hidden;border-radius:12px;box-shadow:0 8px 16px rgba(0,0,0,0.4);border:1px solid rgba(255,255,255,0.05);">
               <video src="${v}" muted playsinline style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;pointer-events:none;"></video>
-              <div style="position:absolute;inset:0;background:linear-gradient(to bottom, transparent 60%, rgba(0,0,0,0.6));"></div>
-              <div style="position:absolute;bottom:6px;right:6px;font-size:9px;background:rgba(0,0,0,0.75);padding:2px 6px;border-radius:4px;font-family:var(--font-mono);font-weight:600;">0:${(12 + i * 2).toString().padStart(2, '0')}</div>
-              <div style="position:absolute;top:6px;left:6px;width:18px;height:18px;border:2px solid rgba(255,255,255,0.4);border-radius:50%;background:rgba(0,0,0,0.3);" class="thumb-check"></div>
+              <div style="position:absolute;inset:0;background:linear-gradient(to top, rgba(0,0,0,0.8) 0%, transparent 40%);"></div>
+              <div style="position:absolute;bottom:8px;right:8px;font-size:10px;background:rgba(0,0,0,0.6);backdrop-filter:blur(4px);padding:3px 8px;border-radius:6px;font-family:var(--font-mono);font-weight:700;color:#fff;box-shadow:0 2px 4px rgba(0,0,0,0.3);">0:${(12 + i * 2).toString().padStart(2, '0')}</div>
+              <div style="position:absolute;top:8px;left:8px;width:20px;height:20px;border:2px solid rgba(255,255,255,0.6);border-radius:50%;background:rgba(0,0,0,0.4);backdrop-filter:blur(4px);box-shadow:0 2px 8px rgba(0,0,0,0.5);" class="thumb-check"></div>
             </div>
           `).join('')}
         </div>
@@ -85,6 +86,11 @@ export function renderVideoEditor() {
             <!-- Dynamic cinematic lighting frame -->
             <div style="position:absolute;inset:0;box-shadow:inset 0 0 40px rgba(0,0,0,0.6);pointer-events:none;z-index:12;"></div>
             
+            <!-- Video Play/Pause Overlay -->
+            <div id="editor-play-overlay" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:72px;height:72px;background:rgba(0,0,0,0.4);backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,0.2);border-radius:50%;display:flex;align-items:center;justify-content:center;color:white;font-size:36px;z-index:14;pointer-events:none;opacity:0;transition:opacity 0.2s, transform 0.2s;">
+              ${Icons.Play()}
+            </div>
+            
             <!-- Video Loading Spinner -->
             <div id="editor-video-spinner" style="position:absolute;inset:0;background:rgba(0,0,0,0.5);display:flex;align-items:center;justify-content:center;z-index:13;" class="hidden">
               <div style="width:40px;height:40px;border-radius:50%;border:3px solid rgba(255,255,255,0.1);border-top-color:var(--accent-gold);animation:spin 1s linear infinite;"></div>
@@ -98,6 +104,7 @@ export function renderVideoEditor() {
           <div style="display:flex;overflow-x:auto;scrollbar-width:none;padding:12px var(--space-4);background:linear-gradient(to bottom, rgba(0,0,0,0.5), transparent);border-bottom:1px solid rgba(255,255,255,0.04);">
             <div style="display:flex;gap:8px;min-width:max-content;width:100%;">
               <button class="editor-tool-tab active" data-tool="trim" style="padding:8px 16px;background:rgba(255,255,255,0.1);border-radius:20px;border:1px solid rgba(255,255,255,0.1);color:var(--text-primary);font-size:12px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:6px;transition:all 0.2s;"><span style="color:var(--accent-blue);">${Icons.Film()}</span> Trim</button>
+              <button class="editor-tool-tab" data-tool="speed" style="padding:8px 16px;background:transparent;border-radius:20px;border:1px solid transparent;color:var(--text-secondary);font-size:12px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:6px;transition:all 0.2s;"><span style="color:var(--accent-blue);">${Icons.Zap()}</span> Speed</button>
               <button class="editor-tool-tab" data-tool="music" style="padding:8px 16px;background:transparent;border-radius:20px;border:1px solid transparent;color:var(--text-secondary);font-size:12px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:6px;transition:all 0.2s;"><span style="color:var(--accent-gold);">${Icons.Music()}</span> Music</button>
               <button class="editor-tool-tab" data-tool="filters" style="padding:8px 16px;background:transparent;border-radius:20px;border:1px solid transparent;color:var(--text-secondary);font-size:12px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:6px;transition:all 0.2s;"><span style="color:var(--accent-emerald);">${Icons.Star()}</span> Filters</button>
               <button class="editor-tool-tab" data-tool="adjust" style="padding:8px 16px;background:transparent;border-radius:20px;border:1px solid transparent;color:var(--text-secondary);font-size:12px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:6px;transition:all 0.2s;"><span style="color:var(--accent-blue);">${Icons.Sliders()}</span> Adjust</button>
@@ -107,18 +114,55 @@ export function renderVideoEditor() {
             </div>
           </div>
 
-          <!-- 1. Trim Panel -->
-          <div id="tool-trim" class="tool-panel anim-slide-up" style="flex:1;padding:var(--space-4);display:flex;flex-direction:column;justify-content:center;gap:12px;">
-            <div style="display:flex;justify-content:space-between;font-size:11px;font-family:var(--font-mono);color:var(--text-tertiary);"><span id="trim-start">00:00</span><span id="trim-end">00:15</span></div>
-            <div style="position:relative;height:56px;background:rgba(0,0,0,0.4);border-radius:12px;overflow:hidden;border:1px solid rgba(255,255,255,0.1);box-shadow:inset 0 4px 10px rgba(0,0,0,0.5);">
-              <div style="position:absolute;inset:0;display:flex;">${Array(14).fill(0).map(()=>`<div style="flex:1;border-right:1px solid rgba(255,255,255,0.03);height:100%;"></div>`).join('')}</div>
-              <div id="trim-range" style="position:absolute;left:0%;right:0%;top:0;bottom:0;border:3px solid var(--accent-gold);background:rgba(212,168,83,0.15);cursor:grab;border-radius:8px;box-shadow:0 0 15px rgba(212,168,83,0.2);">
-                <div class="trim-handle" data-side="left" style="position:absolute;left:-10px;top:0;bottom:0;width:20px;cursor:ew-resize;display:flex;align-items:center;justify-content:center;z-index:2;"><div style="width:6px;height:30px;background:var(--accent-gold);border-radius:4px;box-shadow:0 0 10px rgba(212,168,83,0.6);"></div></div>
-                <div class="trim-handle" data-side="right" style="position:absolute;right:-10px;top:0;bottom:0;width:20px;cursor:ew-resize;display:flex;align-items:center;justify-content:center;z-index:2;"><div style="width:6px;height:30px;background:var(--accent-gold);border-radius:4px;box-shadow:0 0 10px rgba(212,168,83,0.6);"></div></div>
-              </div>
+          <!-- 1. Trim / Multi-Track Timeline Panel -->
+          <div id="tool-trim" class="tool-panel anim-slide-up" style="flex:1;padding:12px var(--space-4);display:flex;flex-direction:column;justify-content:center;gap:8px;">
+            <div style="display:flex;justify-content:space-between;font-size:10px;font-family:var(--font-mono);color:var(--text-tertiary);"><span id="trim-start">00:00.0</span><span id="trim-duration" style="color:var(--accent-gold);font-weight:700;background:rgba(212,168,83,0.1);padding:2px 6px;border-radius:4px;border:1px solid rgba(212,168,83,0.2);">15.0s</span><span id="trim-end">00:15.0</span></div>
+            
+            <div style="position:relative;background:rgba(0,0,0,0.5);border-radius:12px;padding:8px;border:1px solid rgba(255,255,255,0.05);display:flex;flex-direction:column;gap:6px;box-shadow:inset 0 4px 12px rgba(0,0,0,0.6);">
+               <!-- Playhead needle -->
+               <div style="position:absolute;top:0;bottom:0;left:50%;width:2px;background:var(--accent-rose);z-index:10;box-shadow:0 0 8px var(--accent-rose);"></div>
+               <div style="position:absolute;top:-4px;left:calc(50% - 4px);width:10px;height:10px;background:var(--accent-rose);border-radius:50%;z-index:11;box-shadow:0 0 8px var(--accent-rose);"></div>
+               
+               <!-- Video Track -->
+               <div style="display:flex;align-items:center;gap:8px;">
+                 <div style="width:20px;color:var(--text-secondary);transform:scale(0.8);">${Icons.Film()}</div>
+                 <div style="flex:1;position:relative;height:36px;background:rgba(255,255,255,0.05);border-radius:8px;overflow:hidden;box-shadow:inset 0 2px 4px rgba(0,0,0,0.5);">
+                    <div style="position:absolute;inset:0;display:flex;">${Array(12).fill(0).map(()=>`<div style="flex:1;border-right:1px solid rgba(255,255,255,0.03);background:linear-gradient(45deg,#111,#222);"></div>`).join('')}</div>
+                    <div id="trim-range" style="position:absolute;left:0%;right:0%;top:0;bottom:0;border:2px solid var(--accent-gold);background:rgba(212,168,83,0.15);cursor:grab;border-radius:6px;box-shadow:0 0 10px rgba(212,168,83,0.2);">
+                      <div class="trim-handle" data-side="left" style="position:absolute;left:-8px;top:0;bottom:0;width:16px;cursor:ew-resize;display:flex;align-items:center;justify-content:center;z-index:2;"><div style="width:4px;height:20px;background:var(--accent-gold);border-radius:2px;box-shadow:0 0 6px rgba(212,168,83,0.8);"></div></div>
+                      <div class="trim-handle" data-side="right" style="position:absolute;right:-8px;top:0;bottom:0;width:16px;cursor:ew-resize;display:flex;align-items:center;justify-content:center;z-index:2;"><div style="width:4px;height:20px;background:var(--accent-gold);border-radius:2px;box-shadow:0 0 6px rgba(212,168,83,0.8);"></div></div>
+                    </div>
+                 </div>
+               </div>
+               
+               <!-- Audio Track -->
+               <div style="display:flex;align-items:center;gap:8px;">
+                 <div style="width:20px;color:var(--accent-blue);transform:scale(0.8);">${Icons.Music()}</div>
+                 <div style="flex:1;position:relative;height:24px;background:rgba(88,166,255,0.1);border-radius:6px;overflow:hidden;border:1px solid rgba(88,166,255,0.2);">
+                    <div style="position:absolute;inset:0;display:flex;align-items:center;padding:0 4px;gap:2px;">
+                      ${Array(45).fill(0).map(()=>`<div style="flex:1;background:var(--accent-blue);height:${Math.random()*80+20}%;border-radius:1px;opacity:0.8;"></div>`).join('')}
+                    </div>
+                 </div>
+               </div>
+
+               <!-- Overlay/Text Track -->
+               <div style="display:flex;align-items:center;gap:8px;">
+                 <div style="width:20px;color:var(--text-tertiary);transform:scale(0.8);">${Icons.Pen()}</div>
+                 <div style="flex:1;position:relative;height:16px;background:rgba(255,255,255,0.02);border-radius:4px;overflow:hidden;">
+                    <div style="position:absolute;left:20%;right:30%;top:0;bottom:0;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);border-radius:4px;"></div>
+                 </div>
+               </div>
             </div>
-            <div style="display:flex;justify-content:center;">
-              <div style="text-align:center;"><div style="font-size:var(--text-lg);font-weight:800;font-family:var(--font-mono);color:var(--accent-gold);" id="trim-duration">0:15</div><div style="font-size:10px;color:var(--text-tertiary);text-transform:uppercase;letter-spacing:0.04em;">Selected Duration</div></div>
+          </div>
+          
+          <!-- 1b. Speed Panel -->
+          <div id="tool-speed" class="tool-panel hidden anim-slide-up" style="flex:1;padding:var(--space-4) var(--space-5);display:flex;flex-direction:column;gap:16px;justify-content:center;">
+            <div class="card" style="padding:var(--space-4);background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.05);">
+              <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:12px;font-weight:700;"><span style="color:var(--text-primary);display:flex;align-items:center;gap:6px;">${Icons.Zap()} Playback Speed</span><span id="val-speed" style="font-family:var(--font-mono);color:var(--accent-blue);background:rgba(88,166,255,0.1);padding:2px 8px;border-radius:6px;">1.0x</span></div>
+              <input type="range" id="slider-speed" min="0.25" max="3" step="0.25" value="1" style="width:100%;accent-color:var(--accent-blue);">
+              <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--text-tertiary);margin-top:8px;font-family:var(--font-mono);">
+                <span>0.25x</span><span>1.0x</span><span>3.0x</span>
+              </div>
             </div>
           </div>
 
@@ -215,34 +259,58 @@ export function renderVideoEditor() {
       </div>
 
       <!-- Step 3: Publish / Post Metadata Info -->
-      <div id="editor-step-3" class="hidden" style="flex:1;overflow-y:auto;padding:var(--space-4);">
-        <div style="display:flex;gap:var(--space-4);margin-bottom:var(--space-5);">
-          <div id="post-thumb" style="width:96px;aspect-ratio:9/16;border-radius:12px;overflow:hidden;flex-shrink:0;box-shadow:0 4px 12px rgba(0,0,0,0.3);position:relative;">
+      <div id="editor-step-3" class="hidden" style="flex:1;overflow-y:auto;padding:var(--space-4);background:var(--bg-primary);">
+        <div style="display:flex;gap:var(--space-4);margin-bottom:var(--space-5);background:rgba(255,255,255,0.02);padding:16px;border-radius:20px;border:1px solid rgba(255,255,255,0.05);box-shadow:0 8px 24px rgba(0,0,0,0.2);">
+          <div id="post-thumb" style="width:100px;aspect-ratio:9/16;border-radius:12px;overflow:hidden;flex-shrink:0;box-shadow:0 8px 16px rgba(0,0,0,0.4);position:relative;border:1px solid rgba(255,255,255,0.1);">
             <div style="position:absolute;inset:0;background:linear-gradient(45deg,#1a1a2e,#16213e);"></div>
             <video id="editor-thumbnail-preview" muted style="width:100%;height:100%;object-fit:cover;pointer-events:none;"></video>
           </div>
-          <div style="flex:1;"><textarea id="post-desc" class="input" rows="4" placeholder="Describe your series... What happens next? Add tags #VunaShorts #Drama" style="background:transparent;border:none;padding:0;resize:none;font-size:var(--text-sm);line-height:1.5;"></textarea></div>
+          <div style="flex:1;"><textarea id="post-desc" class="input" rows="5" placeholder="Describe your cinematic series... What happens next? Add tags like #VunaShorts #Drama" style="background:transparent;border:none;padding:0;resize:none;font-size:var(--text-sm);line-height:1.6;color:var(--text-primary);"></textarea></div>
         </div>
-        <div style="display:flex;flex-direction:column;gap:var(--space-4);">
-          <div><label style="font-size:var(--text-xs);color:var(--text-tertiary);margin-bottom:6px;display:block;font-weight:600;text-transform:uppercase;letter-spacing:0.04em;">Series Title</label><input type="text" id="post-title" class="input" placeholder="Give your series a catchy title"></div>
-          <div><label style="font-size:var(--text-xs);color:var(--text-tertiary);margin-bottom:6px;display:block;font-weight:600;text-transform:uppercase;letter-spacing:0.04em;">Primary Genre</label><select id="post-genre" class="input" style="appearance:auto;background:rgba(255,255,255,0.04);"><option value="drama">Drama</option><option value="comedy">Comedy</option><option value="romance">Romance</option><option value="action">Action</option><option value="scifi">Sci-Fi</option></select></div>
-          <div><label style="font-size:var(--text-xs);color:var(--text-tertiary);margin-bottom:6px;display:block;font-weight:600;text-transform:uppercase;letter-spacing:0.04em;">Number of Episodes</label><input type="number" id="post-episodes" class="input" value="12" min="1"></div>
-          <div style="display:flex;align-items:center;justify-content:space-between;padding:var(--space-3) 0;border-top:var(--border-subtle);"><div style="display:flex;align-items:center;gap:10px;"><span style="color:var(--accent-blue);">${Icons.MessageCircle()}</span><span style="font-size:var(--text-sm);font-weight:500;">Allow Comments</span></div><input type="checkbox" checked style="accent-color:var(--accent-blue);width:16px;height:16px;"></div>
-          <div style="display:flex;align-items:center;justify-content:space-between;padding:var(--space-3) 0;border-top:var(--border-subtle);"><div style="display:flex;align-items:center;gap:10px;"><span style="color:var(--accent-gold);">${Icons.Download()}</span><span style="font-size:var(--text-sm);font-weight:500;">Allow Device Downloads</span></div><input type="checkbox" style="accent-color:var(--accent-gold);width:16px;height:16px;"></div>
+        
+        <div style="display:flex;flex-direction:column;gap:20px;">
+          <div class="input-group">
+            <label style="font-size:11px;color:var(--accent-gold);margin-bottom:8px;display:block;font-weight:800;text-transform:uppercase;letter-spacing:0.06em;">Series Title</label>
+            <input type="text" id="post-title" class="input" placeholder="Give your series a catchy title" style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.1);border-radius:12px;padding:14px 16px;font-size:15px;box-shadow:inset 0 2px 4px rgba(0,0,0,0.2);">
+          </div>
+          
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+            <div class="input-group">
+              <label style="font-size:11px;color:var(--text-secondary);margin-bottom:8px;display:block;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;">Primary Genre</label>
+              <select id="post-genre" class="input" style="appearance:auto;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.1);border-radius:12px;padding:14px;font-size:14px;color:var(--text-primary);">
+                <option value="drama">Drama</option><option value="comedy">Comedy</option><option value="romance">Romance</option><option value="action">Action</option><option value="scifi">Sci-Fi</option>
+              </select>
+            </div>
+            <div class="input-group">
+              <label style="font-size:11px;color:var(--text-secondary);margin-bottom:8px;display:block;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;">Episodes</label>
+              <input type="number" id="post-episodes" class="input" value="12" min="1" style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.1);border-radius:12px;padding:14px;font-size:14px;font-family:var(--font-mono);color:var(--text-primary);">
+            </div>
+          </div>
+          
+          <div style="background:rgba(255,255,255,0.02);border-radius:16px;padding:8px 16px;border:1px solid rgba(255,255,255,0.05);">
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid rgba(255,255,255,0.05);">
+              <div style="display:flex;align-items:center;gap:12px;"><span style="color:var(--accent-blue);background:rgba(88,166,255,0.1);padding:6px;border-radius:8px;">${Icons.MessageCircle()}</span><span style="font-size:14px;font-weight:600;color:var(--text-primary);">Allow Comments</span></div>
+              <input type="checkbox" checked style="accent-color:var(--accent-blue);width:20px;height:20px;cursor:pointer;">
+            </div>
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 0;">
+              <div style="display:flex;align-items:center;gap:12px;"><span style="color:var(--accent-gold);background:rgba(212,168,83,0.1);padding:6px;border-radius:8px;">${Icons.Download()}</span><span style="font-size:14px;font-weight:600;color:var(--text-primary);">Allow Downloads</span></div>
+              <input type="checkbox" style="accent-color:var(--accent-gold);width:20px;height:20px;cursor:pointer;">
+            </div>
+          </div>
         </div>
       </div>
 
       <!-- Realistic Upload Overlay -->
-      <div id="editor-uploading" class="glass-overlay hidden" style="z-index:60;align-items:center;justify-content:center;background:rgba(10,10,14,0.85);backdrop-filter:blur(16px);">
-        <div style="text-align:center;padding:var(--space-6);background:var(--bg-secondary);border-radius:24px;border:1px solid rgba(255,255,255,0.08);box-shadow:0 24px 48px rgba(0,0,0,0.5);max-width:280px;width:100%;">
-          <div style="position:relative;width:72px;height:72px;margin:0 auto var(--space-4);display:flex;align-items:center;justify-content:center;">
-            <div style="position:absolute;inset:0;border-radius:50%;border:4px solid rgba(88,166,255,0.1);border-top-color:var(--accent-blue);animation:spin 1s linear infinite;"></div>
-            <div style="color:var(--accent-blue);">${Icons.Upload()}</div>
+      <div id="editor-uploading" class="glass-overlay hidden" style="z-index:100;align-items:center;justify-content:center;background:rgba(10,10,14,0.9);backdrop-filter:blur(24px);">
+        <div style="text-align:center;padding:32px 24px;background:var(--bg-secondary);border-radius:24px;border:1px solid rgba(255,255,255,0.1);box-shadow:0 24px 64px rgba(0,0,0,0.6);max-width:300px;width:100%;">
+          <div style="position:relative;width:80px;height:80px;margin:0 auto 24px;display:flex;align-items:center;justify-content:center;">
+            <div style="position:absolute;inset:0;border-radius:50%;border:4px solid rgba(212,168,83,0.1);border-top-color:var(--accent-gold);animation:spin 1s linear infinite;box-shadow:0 0 20px rgba(212,168,83,0.2);"></div>
+            <div style="color:var(--accent-gold);transform:scale(1.2);">${Icons.Upload()}</div>
           </div>
-          <h3 style="margin-bottom:6px;font-weight:700;">Uploading Series</h3>
-          <p style="font-size:var(--text-xs);color:var(--text-secondary);margin-bottom:var(--space-4);">Encoding video and writing to PostgreSQL decentralized storage...</p>
-          <div id="upload-progress-text" style="color:var(--accent-blue);font-family:var(--font-mono);font-size:var(--text-2xl);font-weight:800;">0%</div>
-          <div style="width:100%;height:4px;background:rgba(255,255,255,0.08);border-radius:2px;overflow:hidden;margin-top:12px;">
+          <h3 style="margin-bottom:8px;font-weight:800;font-size:18px;letter-spacing:0.02em;">Publishing Series...</h3>
+          <p style="font-size:12px;color:var(--text-secondary);margin-bottom:24px;line-height:1.5;">Encoding cinematic video and writing to VunaShorts decentralized storage.</p>
+          <div id="upload-progress-text" style="color:var(--text-primary);font-family:var(--font-mono);font-size:32px;font-weight:900;text-shadow:0 2px 10px rgba(0,0,0,0.5);">0%</div>
+          <div style="width:100%;height:6px;background:rgba(255,255,255,0.05);border-radius:3px;overflow:hidden;margin-top:16px;box-shadow:inset 0 1px 3px rgba(0,0,0,0.5);">
             <div id="upload-progress-bar-fill" style="width:0%;height:100%;background:linear-gradient(90deg, var(--accent-blue), var(--accent-gold));transition:width 0.2s;"></div>
           </div>
         </div>
@@ -282,6 +350,44 @@ export function mountVideoEditor(el) {
   const thumbnailPreview = el.querySelector('#editor-thumbnail-preview');
   const previewContainer = el.querySelector('#editor-preview-container');
   const spinner = el.querySelector('#editor-video-spinner');
+  const playOverlay = el.querySelector('#editor-play-overlay');
+
+  // Play/Pause Video Click Handler
+  if (videoPreview) {
+    videoPreview.style.cursor = 'pointer';
+    videoPreview.addEventListener('click', () => {
+      // Do not toggle if not in step 2
+      if (step !== 2) return;
+
+      if (videoPreview.paused) {
+        videoPreview.play();
+        if (backgroundAudio) backgroundAudio.play();
+        
+        if (playOverlay) {
+          playOverlay.innerHTML = Icons.Play();
+          playOverlay.style.opacity = '1';
+          playOverlay.style.transform = 'translate(-50%, -50%) scale(1.1)';
+          setTimeout(() => {
+            playOverlay.style.opacity = '0';
+            playOverlay.style.transform = 'translate(-50%, -50%) scale(1)';
+          }, 500);
+        }
+      } else {
+        videoPreview.pause();
+        if (backgroundAudio) backgroundAudio.pause();
+        
+        if (playOverlay) {
+          playOverlay.innerHTML = Icons.Pause();
+          playOverlay.style.opacity = '1';
+          playOverlay.style.transform = 'translate(-50%, -50%) scale(1.1)';
+          setTimeout(() => {
+            playOverlay.style.opacity = '0';
+            playOverlay.style.transform = 'translate(-50%, -50%) scale(1)';
+          }, 500);
+        }
+      }
+    });
+  }
 
   function show(s) {
     [s1, s2, s3].forEach(x => x.classList.add('hidden'));
@@ -686,6 +792,78 @@ export function mountVideoEditor(el) {
     });
   });
 
+  // --- Speed Panel ---
+  const sliderSpeed = el.querySelector('#slider-speed');
+  const valSpeed = el.querySelector('#val-speed');
+  if (sliderSpeed && valSpeed) {
+    sliderSpeed.addEventListener('input', () => {
+      const speed = parseFloat(sliderSpeed.value);
+      valSpeed.textContent = speed.toFixed(2) + 'x';
+      if (videoPreview) {
+        videoPreview.playbackRate = speed;
+      }
+    });
+  }
+
+  // Helper for making elements draggable inside the preview container
+  function makeDraggable(el) {
+    let isDragging = false;
+    let startX, startY, initialX, initialY;
+
+    el.style.pointerEvents = 'auto'; // allow dragging
+    el.style.cursor = 'move';
+    el.style.transition = 'transform 0.2s';
+
+    const onStart = (e) => {
+      e.stopPropagation();
+      isDragging = true;
+      const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+      const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+      startX = clientX;
+      startY = clientY;
+      
+      // Get current left/top offsets
+      initialX = el.offsetLeft;
+      initialY = el.offsetTop;
+      
+      el.style.transform = 'scale(1.1)';
+      el.style.zIndex = '100'; // bring to front while dragging
+    };
+
+    const onMove = (e) => {
+      if (!isDragging) return;
+      e.preventDefault(); // prevent scrolling
+      const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+      const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+      
+      const dx = clientX - startX;
+      const dy = clientY - startY;
+      
+      // Update position based on initial offset
+      el.style.left = `${initialX + dx}px`;
+      el.style.top = `${initialY + dy}px`;
+      // remove percentage positioning so pixel dragging works smoothly
+      el.style.transform = 'scale(1.1)'; 
+    };
+
+    const onEnd = () => {
+      if (!isDragging) return;
+      isDragging = false;
+      el.style.transform = 'scale(1)';
+      el.style.zIndex = '1'; // reset
+    };
+
+    el.addEventListener('mousedown', onStart);
+    el.addEventListener('touchstart', onStart, { passive: false });
+    
+    // Attach move/end to document to catch fast drags outside element
+    document.addEventListener('mousemove', onMove);
+    document.addEventListener('touchmove', onMove, { passive: false });
+    
+    document.addEventListener('mouseup', onEnd);
+    document.addEventListener('touchend', onEnd);
+  }
+
   // --- Dynamic Stickers / Emojis tool ---
   const stickerOverlay = el.querySelector('#editor-sticker-overlay');
   
@@ -699,17 +877,17 @@ export function mountVideoEditor(el) {
 
       if (stickerOverlay) {
         const span = document.createElement('span');
-        span.style.cssText = 'position:absolute;cursor:move;user-select:none;font-size:48px;animation:heartbeat 0.3s ease;';
+        span.style.cssText = 'position:absolute;user-select:none;font-size:48px;animation:heartbeat 0.3s ease;transform-origin:center;';
         span.textContent = sticker;
         
-        // Dynamic random initial offset in preview frame
-        const rx = Math.random() * 60 + 20;
-        const ry = Math.random() * 60 + 20;
-        span.style.left = rx + '%';
-        span.style.top = ry + '%';
+        // Random initial placement near center
+        const parentRect = stickerOverlay.getBoundingClientRect();
+        span.style.left = (parentRect.width / 2 - 24 + (Math.random() * 40 - 20)) + 'px';
+        span.style.top = (parentRect.height / 2 - 24 + (Math.random() * 40 - 20)) + 'px';
         
+        makeDraggable(span);
         stickerOverlay.appendChild(span);
-        showToast('Sticker placed!', 'success');
+        showToast('Sticker added! Drag to adjust.', 'success');
       }
     });
   });
@@ -767,9 +945,28 @@ export function mountVideoEditor(el) {
       textStyle += `text-shadow:0 3px 10px rgba(0,0,0,0.85);`;
     }
 
-    textOverlay.innerHTML = overlayText 
-      ? `<div style="font-size:26px;font-family:var(--font-display);${textStyle}padding:16px;text-align:center;word-break:break-word;width:100%;max-width:320px;line-height:1.2;">${overlayText}</div>` 
-      : '';
+    if (overlayText) {
+      // If it doesn't already have a draggable text box, create one
+      let textBox = textOverlay.querySelector('.draggable-text-box');
+      if (!textBox) {
+        textOverlay.innerHTML = ''; // clear any old static text
+        textBox = document.createElement('div');
+        textBox.className = 'draggable-text-box';
+        textBox.style.cssText = 'position:absolute;transform-origin:center;cursor:move;user-select:none;';
+        
+        // Center initially
+        const parentRect = textOverlay.getBoundingClientRect();
+        textBox.style.left = (parentRect.width / 2 - 100) + 'px';
+        textBox.style.top = (parentRect.height / 2 - 20) + 'px';
+        
+        makeDraggable(textBox);
+        textOverlay.appendChild(textBox);
+      }
+      
+      textBox.innerHTML = `<div style="font-size:26px;font-family:var(--font-display);${textStyle}padding:16px;text-align:center;word-break:break-word;width:100%;min-width:200px;max-width:320px;line-height:1.2;">${overlayText}</div>`;
+    } else {
+      textOverlay.innerHTML = '';
+    }
   }
 
   // --- Trim range dragging handles simulation ---
@@ -796,9 +993,9 @@ export function mountVideoEditor(el) {
       const r = parseFloat(trimRange.style.right) || 0;
       const dur = Math.round(15 * (100 - l - r) / 100);
       
-      el.querySelector('#trim-duration').textContent = '0:' + dur.toString().padStart(2, '0');
-      el.querySelector('#trim-start').textContent = '00:' + Math.round(l * 15 / 100).toString().padStart(2, '0');
-      el.querySelector('#trim-end').textContent = '00:' + Math.round(15 - r * 15 / 100).toString().padStart(2, '0');
+      el.querySelector('#trim-duration').textContent = dur.toFixed(1) + 's';
+      el.querySelector('#trim-start').textContent = '00:' + Math.round(l * 15 / 100).toString().padStart(2, '0') + '.0';
+      el.querySelector('#trim-end').textContent = '00:' + Math.round(15 - r * 15 / 100).toString().padStart(2, '0') + '.0';
       
       // Seek video to starting trim time dynamically
       if (videoPreview && videoPreview.duration) {
