@@ -73,9 +73,9 @@ export function renderVideoEditor() {
       </div>
 
       <!-- Step 2: Fully Functional Editor Suite -->
-      <div id="editor-step-2" class="hidden" style="flex:1;display:flex;flex-direction:column;background:#050508;">
+      <div id="editor-step-2" class="hidden" style="flex:1;display:flex;flex-direction:column;background:#050508;overflow:hidden;">
         <!-- Canvas/Preview Frame -->
-        <div style="flex:1;background:#000;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;padding:var(--space-2);">
+        <div id="editor-preview-area" style="flex:1;min-height:0;background:#000;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;padding:var(--space-2);">
           <div id="editor-preview-container" style="position:relative;width:100%;height:100%;max-width:380px;aspect-ratio:9/16;border-radius:16px;overflow:hidden;box-shadow:0 12px 36px rgba(0,0,0,0.5);border:1px solid rgba(255,255,255,0.06);background:#111;">
             <video id="editor-video-preview" loop playsinline style="width:100%;height:100%;object-fit:cover;transition:all 0.3s;"></video>
             
@@ -99,7 +99,7 @@ export function renderVideoEditor() {
         </div>
 
         <!-- Suite Control Board -->
-        <div id="editor-tools-panel" style="height:260px;background:var(--bg-secondary);border-top:1px solid rgba(255,255,255,0.08);display:flex;flex-direction:column;z-index:5;">
+        <div id="editor-tools-panel" style="min-height:280px;max-height:50vh;background:var(--bg-secondary);border-top:1px solid rgba(255,255,255,0.08);display:flex;flex-direction:column;z-index:5;flex-shrink:0;">
           <!-- Tabs Navigation (Premium Pill Bar) -->
           <div style="display:flex;overflow-x:auto;scrollbar-width:none;padding:12px var(--space-4);background:linear-gradient(to bottom, rgba(0,0,0,0.5), transparent);border-bottom:1px solid rgba(255,255,255,0.04);">
             <div style="display:flex;gap:8px;min-width:max-content;width:100%;">
@@ -115,7 +115,7 @@ export function renderVideoEditor() {
           </div>
 
           <!-- 1. Trim / Multi-Track Timeline Panel -->
-          <div id="tool-trim" class="tool-panel anim-slide-up" style="flex:1;padding:12px var(--space-4);display:flex;flex-direction:column;justify-content:center;gap:8px;">
+          <div id="tool-trim" class="tool-panel anim-slide-up" style="flex:1;padding:12px var(--space-4);display:flex;flex-direction:column;justify-content:center;gap:8px;overflow-y:auto;">
             <div style="display:flex;justify-content:space-between;font-size:10px;font-family:var(--font-mono);color:var(--text-tertiary);"><span id="trim-start">00:00.0</span><span id="trim-duration" style="color:var(--accent-gold);font-weight:700;background:rgba(212,168,83,0.1);padding:2px 6px;border-radius:4px;border:1px solid rgba(212,168,83,0.2);">15.0s</span><span id="trim-end">00:15.0</span></div>
             
             <div style="position:relative;background:rgba(0,0,0,0.5);border-radius:12px;padding:8px;border:1px solid rgba(255,255,255,0.05);display:flex;flex-direction:column;gap:6px;box-shadow:inset 0 4px 12px rgba(0,0,0,0.6);">
@@ -156,7 +156,7 @@ export function renderVideoEditor() {
           </div>
           
           <!-- 1b. Speed Panel -->
-          <div id="tool-speed" class="tool-panel hidden anim-slide-up" style="flex:1;padding:var(--space-4) var(--space-5);display:flex;flex-direction:column;gap:16px;justify-content:center;">
+          <div id="tool-speed" class="tool-panel hidden anim-slide-up" style="flex:1;padding:var(--space-4) var(--space-5);display:flex;flex-direction:column;gap:16px;justify-content:center;overflow-y:auto;">
             <div class="card" style="padding:var(--space-4);background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.05);">
               <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:12px;font-weight:700;"><span style="color:var(--text-primary);display:flex;align-items:center;gap:6px;">${Icons.Zap()} Playback Speed</span><span id="val-speed" style="font-family:var(--font-mono);color:var(--accent-blue);background:rgba(88,166,255,0.1);padding:2px 8px;border-radius:6px;">1.0x</span></div>
               <input type="range" id="slider-speed" min="0.25" max="3" step="0.25" value="1" style="width:100%;accent-color:var(--accent-blue);">
@@ -208,7 +208,7 @@ export function renderVideoEditor() {
           </div>
 
           <!-- 4. Adjust Panel (Interactive Sliders) -->
-          <div id="tool-adjust" class="tool-panel hidden anim-slide-up" style="flex:1;padding:var(--space-4) var(--space-5);display:flex;flex-direction:column;gap:16px;justify-content:center;">
+          <div id="tool-adjust" class="tool-panel hidden anim-slide-up" style="flex:1;padding:var(--space-3) var(--space-4);display:flex;flex-direction:column;gap:12px;justify-content:flex-start;overflow-y:auto;">
             <div class="card" style="padding:var(--space-3) var(--space-4);background:rgba(255,255,255,0.02);">
               <div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:8px;"><span style="color:var(--text-secondary);font-weight:600;display:flex;align-items:center;gap:6px;">${Icons.Sparkles()} Brightness</span><span id="val-brightness" style="font-family:var(--font-mono);font-weight:700;color:var(--accent-blue);">100%</span></div>
               <input type="range" id="slider-brightness" min="50" max="150" value="100" style="width:100%;accent-color:var(--accent-blue);">
@@ -231,7 +231,7 @@ export function renderVideoEditor() {
           </div>
 
           <!-- 6. Text Panel -->
-          <div id="tool-text" class="tool-panel hidden anim-slide-up" style="flex:1;padding:var(--space-4);display:flex;flex-direction:column;gap:16px;justify-content:center;">
+          <div id="tool-text" class="tool-panel hidden anim-slide-up" style="flex:1;padding:var(--space-3) var(--space-4);display:flex;flex-direction:column;gap:12px;justify-content:center;overflow-y:auto;">
             <input type="text" id="text-input" class="input" placeholder="Enter series overlay text..." style="font-size:var(--text-sm);border-radius:12px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);backdrop-filter:blur(8px);padding:12px 16px;box-shadow:inset 0 2px 4px rgba(0,0,0,0.2);">
             <div style="display:flex;gap:var(--space-2);align-items:center;">
               <button class="btn btn-secondary btn-sm text-style-btn active" data-style="bold" style="font-weight:800;width:38px;height:38px;border-radius:12px;padding:0;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);">B</button>

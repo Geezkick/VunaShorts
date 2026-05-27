@@ -60,9 +60,10 @@ export function updateNavState(path) {
     });
   }
 
-  // Hide nav on pre-login screens only
+  // Hide nav on full-screen / immersive screens
+  const fullScreenPaths = ['splash', 'auth', 'video-editor', 'go-live'];
   const mainApp = document.getElementById('main-app');
-  if (path === 'splash' || path === 'auth') {
+  if (fullScreenPaths.includes(path)) {
     nav.style.transform = 'translateY(100%)';
     nav.style.display = 'none';
     if (mainApp) mainApp.classList.add('no-nav');

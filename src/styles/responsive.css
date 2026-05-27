@@ -44,6 +44,65 @@
   }
 }
 
+/* ── Video Editor Mobile Overrides ── */
+@media (max-width: 767px) {
+  /* The editor takes the full screen with no nav */
+  #video-editor {
+    position: fixed !important;
+    inset: 0 !important;
+    z-index: 50;
+  }
+
+  /* Constrain preview so tools panel has room */
+  #editor-preview-area {
+    max-height: 45vh;
+    flex: none !important;
+  }
+
+  /* Give tools panel the rest of the screen */
+  #editor-tools-panel {
+    flex: 1 !important;
+    min-height: 0 !important;
+    max-height: none !important;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* Make tool panels fill and scroll */
+  #editor-tools-panel .tool-panel {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Compact tab bar on mobile */
+  #editor-tools-panel > div:first-child {
+    flex-shrink: 0;
+  }
+
+  /* Tab pills are smaller on mobile */
+  .editor-tool-tab {
+    padding: 6px 12px !important;
+    font-size: 11px !important;
+    white-space: nowrap;
+  }
+
+  /* Ensure sliders have enough touch room */
+  #editor-tools-panel input[type="range"] {
+    height: 28px;
+    cursor: pointer;
+  }
+}
+
+/* Very short screens (landscape or small phones) */
+@media (max-height: 600px) {
+  #editor-preview-area {
+    max-height: 35vh;
+  }
+}
+
 /* ── Tablet Portrait (≥ 600px) ── */
 @media (min-width: 600px) {
   #app {
